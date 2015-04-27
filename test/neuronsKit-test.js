@@ -52,7 +52,7 @@ describe( "..." , function() {
 		input1.signal = 2.4999 ;
 		input2.signal = 1 ;
 		
-		neuron.update() ;
+		neuron.forwardSignal() ;
 		
 		console.log( neuron.signal ) ;
 	} ) ;
