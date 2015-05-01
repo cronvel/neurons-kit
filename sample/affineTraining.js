@@ -12,7 +12,7 @@ var i , x , y , output , a , b , c ;
 var network = nk.createNetwork() ;
 	inputX = nk.createSignalEmitter() ,
 	inputY = nk.createSignalEmitter() ,
-	neuron = nk.createNeuron( { transfer: 'linear' , threshold: Math.floor( -10 + Math.random() * 21 ) } ) ;
+	neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
 
 network.addInput( 'x' , inputX ) ;
 network.addInput( 'y' , inputY ) ;
@@ -20,7 +20,7 @@ network.addOutput( 'output' , neuron ) ;
 
 a = Math.floor( -10 + Math.random() * 21 ) ;
 b = Math.floor( -10 + Math.random() * 21 ) ;
-constant = Math.floor( 1 + Math.random() * 10 ) ;
+constant = Math.floor( -10 + Math.random() * 21 ) ;
 
 inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
 inputY.connectTo( neuron , -10 + Math.random() * 20 ) ;
