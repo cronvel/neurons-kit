@@ -25,6 +25,8 @@ constant = Math.floor( -10 + Math.random() * 21 ) ;
 inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
 inputY.connectTo( neuron , -10 + Math.random() * 20 ) ;
 
+network.feedForwardOrder() ;
+
 console.log( "\nFunction wanted: f(x,y) = %sx+%sy\n" , a , b ) ;
 
 for ( i = 0 ; i < 100 ; i ++ )
@@ -38,8 +40,11 @@ for ( i = 0 ; i < 100 ; i ++ )
 	x = -10 + Math.random() * 20 ;
 	y = -10 + Math.random() * 20 ;
 	
+	/*
 	network.setInputSignals( { x: x , y: y } ) ;
 	output = network.getOutputSignal( 'output' ) ;
+	*/
+	output = network.feedForward( { x: x , y: y } ) ;
 	
 	expected = a * x + b * y + constant ;
 	console.log( "x: %s , y: %s , expected: %s , output: %s" , x , y , expected , output ) ;
