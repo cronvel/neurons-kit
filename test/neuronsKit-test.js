@@ -116,25 +116,147 @@ describe( "Network" , function() {
 
 
 
-/*
-describe( "..." , function() {
+describe( "Learning" , function() {
 	
-	it( "..." , function() {
-		var neuron = nk.createNeuron( { transfer: 'step' } ) ;
+	it( "Affine 'ax + b' learning" , function() {
 		
-		var input1 = nk.createSignalEmitter() ,
-			input2 = nk.createSignalEmitter() ;
+		var i , learningSample = 80 , x , output , a , b , c , error , errorList = [] , averageError = 0 ;
 		
-		input1.connectTo( neuron , 1 ) ;
-		input2.connectTo( neuron , -2 ) ;
+		var network = nk.createNetwork() ;
+			inputX = nk.createSignalEmitter() ,
+			neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
 		
-		input1.signal = 2.4999 ;
-		input2.signal = 1 ;
+		network.addInput( 'x' , inputX ) ;
+		network.addOutput( 'output' , neuron ) ;
 		
-		neuron.forwardSignal() ;
+		a = Math.floor( -10 + Math.random() * 21 ) ;
+		b = Math.floor( -10 + Math.random() * 21 ) ;
 		
-		console.log( neuron.signal ) ;
+		inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		
+		for ( i = 0 ; i < learningSample ; i ++ )
+		{
+			//console.log( "\n-------- #%s -------- f(x) = %sx + %s --------" , i , a , b ) ;
+			//console.log( "Wx: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , - network.outputs.output.threshold ) ;
+			
+			x = -10 + Math.random() * 20 ;
+			expected = a * x + b ;
+			
+			output = network.feedForward( { x: x } ) ;
+			
+			error = expected - output.output ;
+			errorList.push( error ) ;
+			
+			//console.log( "x: %s , expected: %s , output: %s , error: %s" , x , expected , output.output , error ) ;
+			
+			network.backwardCorrection( { output: expected } ) ;
+		}
+		
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		averageError = averageError / 20 ;
+		
+		//console.log( averageError ) ;
+		
+		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
+	} ) ;
+	
+	it( "Affine 'ax + by + c' learning" , function() {
+		
+		var i , learningSample = 150 , x , y , output , a , b , c , error , errorList = [] , averageError = 0 ;
+		
+		var network = nk.createNetwork() ;
+			inputX = nk.createSignalEmitter() ,
+			inputY = nk.createSignalEmitter() ,
+			neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
+		
+		network.addInput( 'x' , inputX ) ;
+		network.addInput( 'y' , inputY ) ;
+		network.addOutput( 'output' , neuron ) ;
+		
+		a = Math.floor( -10 + Math.random() * 21 ) ;
+		b = Math.floor( -10 + Math.random() * 21 ) ;
+		c = Math.floor( -10 + Math.random() * 21 ) ;
+		
+		inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		inputY.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		
+		for ( i = 0 ; i < learningSample ; i ++ )
+		{
+			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			
+			x = -10 + Math.random() * 20 ;
+			y = -10 + Math.random() * 20 ;
+			expected = a * x + b * y + c ;
+			
+			output = network.feedForward( { x: x , y: y } ) ;
+			
+			error = expected - output.output ;
+			errorList.push( error ) ;
+			
+			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
+			
+			network.backwardCorrection( { output: expected } ) ;
+		}
+		
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		averageError = averageError / 20 ;
+		
+		//console.log( averageError ) ;
+		
+		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
+	} ) ;
+	
+	it( "Affine 'ax + by + cx + d' learning" , function() {
+		
+		var i , learningSample = 250 , x , y , z , output , a , b , c , d , error , errorList = [] , averageError = 0 ;
+		
+		var network = nk.createNetwork() ;
+			inputX = nk.createSignalEmitter() ,
+			inputY = nk.createSignalEmitter() ,
+			inputZ = nk.createSignalEmitter() ,
+			neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
+		
+		network.addInput( 'x' , inputX ) ;
+		network.addInput( 'y' , inputY ) ;
+		network.addInput( 'z' , inputZ ) ;
+		network.addOutput( 'output' , neuron ) ;
+		
+		a = Math.floor( -10 + Math.random() * 21 ) ;
+		b = Math.floor( -10 + Math.random() * 21 ) ;
+		c = Math.floor( -10 + Math.random() * 21 ) ;
+		d = Math.floor( -10 + Math.random() * 21 ) ;
+		
+		inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		inputY.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		inputZ.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		
+		for ( i = 0 ; i < learningSample ; i ++ )
+		{
+			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %sz + %s --------" , i , a , b , c , d ) ;
+			//console.log( "Wx: %s , Wy: %s , Wz: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			
+			x = -10 + Math.random() * 20 ;
+			y = -10 + Math.random() * 20 ;
+			z = -10 + Math.random() * 20 ;
+			expected = a * x + b * y + c * z + d ;
+			
+			output = network.feedForward( { x: x , y: y , z: z } ) ;
+			
+			error = expected - output.output ;
+			errorList.push( error ) ;
+			
+			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
+			
+			network.backwardCorrection( { output: expected } ) ;
+		}
+		
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		averageError = averageError / 20 ;
+		
+		//console.log( averageError ) ;
+		
+		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
 	} ) ;
 } ) ;
-*/
 
