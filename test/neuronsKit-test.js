@@ -29,8 +29,12 @@
 
 
 
-var nk = require( '../lib/neuronsKit.js' ) ;
 var expect = require( 'expect.js' ) ;
+var spp = require( 'smart-preprocessor' ) ;
+var nk = require( '../lib/neuronsKit.js' ) ;
+//
+
+
 
 
 
