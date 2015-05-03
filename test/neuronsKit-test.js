@@ -130,7 +130,7 @@ describe( "Network" , function() {
 
 
 
-describe( "Learning" , function() {
+describe( "Single neuron learning" , function() {
 	
 	it( "logical AND learning" , function() {
 		
@@ -172,7 +172,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: sample.expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -220,7 +220,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: sample.expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -268,7 +268,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: sample.expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -316,7 +316,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: sample.expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -358,7 +358,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -405,7 +405,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -457,7 +457,7 @@ describe( "Learning" , function() {
 			network.backwardCorrection( { output: expected } ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += errorList[ i ] ; }
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
 		averageError = averageError / 20 ;
 		
 		//console.log( averageError ) ;
@@ -465,4 +465,68 @@ describe( "Learning" , function() {
 		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
 	} ) ;
 } ) ;
+
+	
+
+describe( "Multiple neurons learning" , function() {
+	
+	it( "logical XOR learning" , function() {
+		
+		var i , samples , sample , learningSample = 300 , x , y , output , error , errorList = [] , averageError = 0 ;
+		
+		var network = nk.createNetwork() ;
+			inputX = nk.createSignalEmitter() ,
+			inputY = nk.createSignalEmitter() ,
+			hiddenNeuron1 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
+			hiddenNeuron2 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
+			outputNeuron = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+		
+		network.addInput( 'x' , inputX ) ;
+		network.addInput( 'y' , inputY ) ;
+		network.addHiddenNeuron( hiddenNeuron1 ) ;
+		network.addHiddenNeuron( hiddenNeuron2 ) ;
+		network.addOutput( 'output' , outputNeuron ) ;
+		
+		inputX.connectTo( hiddenNeuron1 , 0 ) ;
+		inputY.connectTo( hiddenNeuron1 , 0 ) ;
+		inputX.connectTo( hiddenNeuron2 , 0 ) ;
+		inputY.connectTo( hiddenNeuron2 , 0 ) ;
+		
+		hiddenNeuron1.connectTo( outputNeuron , 0 ) ;
+		hiddenNeuron2.connectTo( outputNeuron , 0 ) ;
+		
+		samples = [
+			{ x: 0 , y: 0 , expected: 0 } ,
+			{ x: 0 , y: 1 , expected: 1 } ,
+			{ x: 1 , y: 0 , expected: 1 } ,
+			{ x: 1 , y: 1 , expected: 0 }
+		] ;
+		
+		for ( i = 0 ; i < learningSample ; i ++ )
+		{
+			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			
+			sample = samples[ i % samples.length ] ;
+			
+			output = network.feedForward( sample ) ;
+			
+			error = sample.expected - output.output ;
+			errorList.push( error ) ;
+			
+			console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , sample.x , sample.y , sample.expected , output.output , error ) ;
+			
+			network.backwardCorrection( { output: sample.expected } ) ;
+		}
+		
+		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
+		averageError = averageError / 20 ;
+		
+		console.log( averageError ) ;
+		
+		expect( averageError ).to.be( 0 ) ;
+	} ) ;
+} ) ;
+
+
 
