@@ -8,6 +8,7 @@
 *.css.gz
 *.js.gz
 *.png
+*.pproc.js
 .spellcast
 build
 _build
