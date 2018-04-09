@@ -28,6 +28,7 @@
 
 
 
+var nk = require( '..' ) ;
 var expect = require( 'expect.js' ) ;
 
 
@@ -42,71 +43,69 @@ describe( "Network" , function() {
 	
 	it( "Feed forward order" , function() {
 		
-		var network = nk.createNetwork() ;
+		var network = new nk.Network() ,
+			inputA = new nk.SignalEmitter() ,
+			inputB = new nk.SignalEmitter() ,
+			outputA = new nk.Neuron() ,
+			outputB = new nk.Neuron() ;
+
+		var	hidden11 = new nk.Neuron() ,
+			hidden12 = new nk.Neuron() ;
+
+		var	hidden21 = new nk.Neuron() ,
+			hidden22 = new nk.Neuron() ;
+
+		var	hidden31 = new nk.Neuron() ,
+			hidden32 = new nk.Neuron() ;
+
+		network.addInput( inputA , 'a' ) ;
+		network.addInput( inputB , 'b' ) ;
+		network.addOutput( outputA , 'outputA' , outputA ) ;
+		network.addOutput( outputB , 'outputB' , outputB ) ;
+		network.addHidden( hidden31 ) ;
+		network.addHidden( hidden32 ) ;
+		network.addHidden( hidden21 ) ;
+		network.addHidden( hidden22 ) ;
+		network.addHidden( hidden11 ) ;
+		network.addHidden( hidden12 ) ;
+
+		hidden11.addInput( inputA , 1 ) ;
+		hidden11.addInput( inputB , 1 ) ;
+		hidden12.addInput( inputA , 1 ) ;
+		hidden12.addInput( inputB , 1 ) ;
+
+		hidden21.addInput( hidden11 , 1 ) ;
+		hidden21.addInput( hidden12 , 1 ) ;
+		hidden22.addInput( hidden11 , 1 ) ;
+		hidden22.addInput( hidden12 , 1 ) ;
+
+		hidden31.addInput( hidden21 , 1 ) ;
+		hidden31.addInput( hidden22 , 1 ) ;
+		hidden32.addInput( hidden21 , 1 ) ;
+		hidden32.addInput( hidden22 , 1 ) ;
+
+		outputA.addInput( hidden31 , 1 ) ;
+		outputA.addInput( hidden32 , 1 ) ;
+		outputB.addInput( hidden31 , 1 ) ;
+		outputB.addInput( hidden32 , 1 ) ;
+
+		network.init() ;
 		
-		var inputA = nk.createSignalEmitter() ,
-			inputB = nk.createSignalEmitter() ;
-		
-		var outputA = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-			outputB = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
-		
-		var	hidden11 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-			hidden12 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
-		
-		var	hidden21 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-			hidden22 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
-		
-		var	hidden31 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-			hidden32 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
-		
-		network.addInput( 'a' , inputA ) ;
-		network.addInput( 'b' , inputB ) ;
-		network.addOutput( 'outputA' , outputA ) ;
-		network.addOutput( 'outputB' , outputB ) ;
-		network.addHiddenNeuron( hidden21 ) ;
-		network.addHiddenNeuron( hidden22 ) ;
-		network.addHiddenNeuron( hidden11 ) ;
-		network.addHiddenNeuron( hidden12 ) ;
-		network.addHiddenNeuron( hidden31 ) ;
-		network.addHiddenNeuron( hidden32 ) ;
-		
-		inputA.connectTo( hidden11 , 1 ) ;
-		inputA.connectTo( hidden12 , 1 ) ;
-		inputB.connectTo( hidden11 , 1 ) ;
-		inputB.connectTo( hidden12 , 1 ) ;
-		
-		hidden11.connectTo( hidden21 , 1 ) ;
-		hidden11.connectTo( hidden22 , 1 ) ;
-		hidden12.connectTo( hidden21 , 1 ) ;
-		hidden12.connectTo( hidden22 , 1 ) ;
-		
-		hidden21.connectTo( hidden31 , 1 ) ;
-		hidden21.connectTo( hidden32 , 1 ) ;
-		hidden22.connectTo( hidden31 , 1 ) ;
-		hidden22.connectTo( hidden32 , 1 ) ;
-		
-		hidden31.connectTo( outputA , 1 ) ;
-		hidden31.connectTo( outputB , 1 ) ;
-		hidden32.connectTo( outputA , 1 ) ;
-		hidden32.connectTo( outputB , 1 ) ;
-		
-		network.feedForwardOrder() ;
-		
-		expect( network.neuronOrder.indexOf( hidden11 ) ).to.be.within( 0 , 1 ) ;
-		expect( network.neuronOrder.indexOf( hidden12 ) ).to.be.within( 0 , 1 ) ;
-		expect( network.neuronOrder.indexOf( hidden21 ) ).to.be.within( 2 , 3 ) ;
-		expect( network.neuronOrder.indexOf( hidden22 ) ).to.be.within( 2 , 3 ) ;
-		expect( network.neuronOrder.indexOf( hidden31 ) ).to.be.within( 4 , 5 ) ;
-		expect( network.neuronOrder.indexOf( hidden32 ) ).to.be.within( 4 , 5 ) ;
-		expect( network.neuronOrder.indexOf( outputA ) ).to.be.within( 6 , 7 ) ;
-		expect( network.neuronOrder.indexOf( outputB ) ).to.be.within( 6 , 7 ) ;
+		expect( network.orderedUnits.indexOf( hidden11 ) ).to.be.within( 0 , 1 ) ;
+		expect( network.orderedUnits.indexOf( hidden12 ) ).to.be.within( 0 , 1 ) ;
+		expect( network.orderedUnits.indexOf( hidden21 ) ).to.be.within( 2 , 3 ) ;
+		expect( network.orderedUnits.indexOf( hidden22 ) ).to.be.within( 2 , 3 ) ;
+		expect( network.orderedUnits.indexOf( hidden31 ) ).to.be.within( 4 , 5 ) ;
+		expect( network.orderedUnits.indexOf( hidden32 ) ).to.be.within( 4 , 5 ) ;
+		expect( network.orderedUnits.indexOf( outputA ) ).to.be.within( 6 , 7 ) ;
+		expect( network.orderedUnits.indexOf( outputB ) ).to.be.within( 6 , 7 ) ;
 		
 		// Create a loop
-		hidden32.connectTo( hidden21 , 1 ) ;
+		hidden21.addInput( hidden31 , 1 ) ;
 		
-		// So .feedForwardOrder() should throw an error...
+		// So .computeUnitOrder() should throw an error...
 		try {
-			network.feedForwardOrder() ;
+			network.init() ;
 			expect().fail( 'It should throw!' ) ;
 		}
 		catch( error ) {
@@ -122,17 +121,19 @@ describe( "Single neuron learning" , function() {
 		
 		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			neuron = new nk.Neuron( { transfer: nk.transferFunctions.relu } ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addOutput( 'output' , neuron ) ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( neuron , 'output' ) ;
 		
-		inputX.connectTo( neuron , 0 ) ;
-		inputY.connectTo( neuron , 0 ) ;
+		neuron.addInput( inputX ) ;
+		neuron.addInput( inputY ) ;
+		
+		network.init() ;
 		
 		samples = [
 			{ x: 0 , y: 0 , expected: 0 } ,
@@ -144,11 +145,11 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			sample = samples[ i % samples.length ] ;
 			
-			output = network.feedForward( sample ) ;
+			output = network.process( sample ) ;
 			
 			error = sample.expected - output.output ;
 			errorList.push( error ) ;
@@ -170,10 +171,10 @@ describe( "Single neuron learning" , function() {
 		
 		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
 			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+			neuron = nk.createNeuron() ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addInput( 'y' , inputY ) ;
@@ -192,7 +193,7 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			sample = samples[ i % samples.length ] ;
 			
@@ -218,10 +219,10 @@ describe( "Single neuron learning" , function() {
 		
 		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
 			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+			neuron = nk.createNeuron() ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addInput( 'y' , inputY ) ;
@@ -240,7 +241,7 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			sample = samples[ i % samples.length ] ;
 			
@@ -266,10 +267,10 @@ describe( "Single neuron learning" , function() {
 		
 		var i , samples , sample , learningSample = 30 , x , y , output , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
 			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+			neuron = nk.createNeuron() ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addInput( 'y' , inputY ) ;
@@ -288,7 +289,7 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			sample = samples[ i % samples.length ] ;
 			
@@ -314,9 +315,9 @@ describe( "Single neuron learning" , function() {
 		
 		var i , learningSample = 80 , x , output , a , b , c , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
+			neuron = nk.createNeuron( { transfer: 'linear' , bias: -10 + Math.random() * 20 } ) ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addOutput( 'output' , neuron ) ;
@@ -329,7 +330,7 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x) = %sx + %s --------" , i , a , b ) ;
-			//console.log( "Wx: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , - network.outputs.output.bias ) ;
 			
 			x = -10 + Math.random() * 20 ;
 			expected = a * x + b ;
@@ -356,10 +357,10 @@ describe( "Single neuron learning" , function() {
 		
 		var i , learningSample = 150 , x , y , output , a , b , c , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
 			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
+			neuron = nk.createNeuron( { transfer: 'linear' , bias: -10 + Math.random() * 20 } ) ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addInput( 'y' , inputY ) ;
@@ -375,7 +376,7 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			x = -10 + Math.random() * 20 ;
 			y = -10 + Math.random() * 20 ;
@@ -403,11 +404,11 @@ describe( "Single neuron learning" , function() {
 		
 		var i , learningSample = 250 , x , y , z , output , a , b , c , d , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
 			inputY = nk.createSignalEmitter() ,
 			inputZ = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'linear' , threshold: -10 + Math.random() * 20 } ) ;
+			neuron = nk.createNeuron( { transfer: 'linear' , bias: -10 + Math.random() * 20 } ) ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addInput( 'y' , inputY ) ;
@@ -426,7 +427,7 @@ describe( "Single neuron learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %sz + %s --------" , i , a , b , c , d ) ;
-			//console.log( "Wx: %s , Wy: %s , Wz: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , Wz: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			x = -10 + Math.random() * 20 ;
 			y = -10 + Math.random() * 20 ;
@@ -460,12 +461,12 @@ describe( "Multiple neurons learning" , function() {
 		
 		var i , samples , sample , learningSample = 300 , x , y , output , error , errorList = [] , averageError = 0 ;
 		
-		var network = nk.createNetwork() ;
+		var network = nk.createNetwork() ,
 			inputX = nk.createSignalEmitter() ,
 			inputY = nk.createSignalEmitter() ,
-			hiddenNeuron1 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-			hiddenNeuron2 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-			outputNeuron = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+			hiddenNeuron1 = nk.createNeuron() ,
+			hiddenNeuron2 = nk.createNeuron() ,
+			outputNeuron = nk.createNeuron() ;
 		
 		network.addInput( 'x' , inputX ) ;
 		network.addInput( 'y' , inputY ) ;
@@ -491,7 +492,7 @@ describe( "Multiple neurons learning" , function() {
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
 			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.threshold ) ;
+			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
 			
 			sample = samples[ i % samples.length ] ;
 			

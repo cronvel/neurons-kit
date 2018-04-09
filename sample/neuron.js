@@ -24,18 +24,23 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-var nk = require( '../lib/neuronsKit.js' ) ;
+
+"use strict" ;
 
 
-var neuron = nk.createNeuron( { transfer: 'step' } ) ;
 
-var input1 = nk.createSignalEmitter() ,
-	input2 = nk.createSignalEmitter() ;
+var nk = require( '..' ) ;
 
-input1.connectTo( neuron , 1 ) ;
-input2.connectTo( neuron , -2 ) ;
 
-input1.signal = 2.4999 ;
+var neuron = new nk.Neuron( { transfer: nk.transferFunctions.leakyRelu } ) ;
+
+var input1 = new nk.SignalEmitter() ,
+	input2 = new nk.SignalEmitter() ;
+
+neuron.addInput( input1 , 1 ) ;
+neuron.addInput( input2 , 0.5 ) ;
+
+input1.signal = -2.5 ;
 input2.signal = 1 ;
 
 neuron.forwardSignal() ;

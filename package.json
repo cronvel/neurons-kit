@@ -2,7 +2,7 @@
   "name": "neurons-kit",
   "version": "0.0.0",
   "description": "Work in progress...",
-  "main": "lib/neurons.js",
+  "main": "lib/neuronsKit.js",
   "private": true,
   "directories": {
     "test": "test"

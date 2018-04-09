@@ -24,54 +24,59 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-var nk = require( '../lib/neuronsKit.js' ) ;
+
+"use strict" ;
 
 
 
-var network = nk.createNetwork() ;
-	inputA = nk.createSignalEmitter() ,
-	inputB = nk.createSignalEmitter() ,
-	outputA = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-	outputB = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
+var nk = require( '..' ) ;
 
-var	hidden21 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-	hidden22 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
 
-var	hidden11 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ,
-	hidden12 = nk.createNeuron( { transfer: 'step' , threshold: 0 } ) ;
 
-network.addInput( 'a' , inputA ) ;
-network.addInput( 'b' , inputB ) ;
-network.addOutput( 'outputA' , outputA ) ;
-network.addOutput( 'outputB' , outputB ) ;
-network.addHiddenNeuron( hidden21 ) ;
-network.addHiddenNeuron( hidden22 ) ;
-network.addHiddenNeuron( hidden11 ) ;
-network.addHiddenNeuron( hidden12 ) ;
+var network = new nk.Network() ,
+	inputA = new nk.SignalEmitter() ,
+	inputB = new nk.SignalEmitter() ,
+	outputA = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ,
+	outputB = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ;
 
-inputA.connectTo( hidden11 , 1 ) ;
-inputA.connectTo( hidden12 , 1 ) ;
-inputB.connectTo( hidden11 , 1 ) ;
-inputB.connectTo( hidden12 , 1 ) ;
+var	hidden11 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ,
+	hidden12 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ;
 
-hidden11.connectTo( hidden21 , 1 ) ;
-hidden11.connectTo( hidden22 , 1 ) ;
-hidden12.connectTo( hidden21 , 1 ) ;
-hidden12.connectTo( hidden22 , 1 ) ;
+var	hidden21 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ,
+	hidden22 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ;
 
-hidden21.connectTo( outputA , 1 ) ;
-hidden21.connectTo( outputB , 1 ) ;
-hidden22.connectTo( outputA , 1 ) ;
-hidden22.connectTo( outputB , 1 ) ;
+network.addInput( inputA , 'a' ) ;
+network.addInput( inputB , 'b' ) ;
+network.addOutput( outputA , 'outputA' , outputA ) ;
+network.addOutput( outputB , 'outputB' , outputB ) ;
+network.addHidden( hidden21 ) ;
+network.addHidden( hidden22 ) ;
+network.addHidden( hidden11 ) ;
+network.addHidden( hidden12 ) ;
 
-network.feedForwardOrder() ;
+hidden11.addInput( inputA , 1 ) ;
+hidden11.addInput( inputB , 1 ) ;
+hidden12.addInput( inputA , 1 ) ;
+hidden12.addInput( inputB , 1 ) ;
 
-console.log( network.neuronOrder.indexOf( hidden11 ) ) ;
-console.log( network.neuronOrder.indexOf( hidden12 ) ) ;
-console.log( network.neuronOrder.indexOf( hidden21 ) ) ;
-console.log( network.neuronOrder.indexOf( hidden22 ) ) ;
-console.log( network.neuronOrder.indexOf( outputA ) ) ;
-console.log( network.neuronOrder.indexOf( outputB ) ) ;
+hidden21.addInput( hidden11 , 1 ) ;
+hidden21.addInput( hidden12 , 1 ) ;
+hidden22.addInput( hidden11 , 1 ) ;
+hidden22.addInput( hidden12 , 1 ) ;
+
+outputA.addInput( hidden21 , 1 ) ;
+outputA.addInput( hidden22 , 1 ) ;
+outputB.addInput( hidden21 , 1 ) ;
+outputB.addInput( hidden22 , 1 ) ;
+
+network.computeUnitOrder() ;
+
+console.log( network.orderedUnits.indexOf( hidden11 ) ) ;
+console.log( network.orderedUnits.indexOf( hidden12 ) ) ;
+console.log( network.orderedUnits.indexOf( hidden21 ) ) ;
+console.log( network.orderedUnits.indexOf( hidden22 ) ) ;
+console.log( network.orderedUnits.indexOf( outputA ) ) ;
+console.log( network.orderedUnits.indexOf( outputB ) ) ;
 
 /*
 network.setInputSignals( {
