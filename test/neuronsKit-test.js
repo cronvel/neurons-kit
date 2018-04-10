@@ -117,7 +117,7 @@ describe( "Network" , function() {
 
 describe( "Single neuron learning" , function() {
 	
-	it( "logical AND learning" , function() {
+	it( "zzz logical AND learning" , function() {
 		
 		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
 		
@@ -142,21 +142,23 @@ describe( "Single neuron learning" , function() {
 			{ x: 1 , y: 1 , expected: 1 }
 		] ;
 		
+		//learningSample = 5000 ; // /!\ TMP TMP TMP /!\
+		
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
+			console.log( "\nWx: %s , Wy: %s , bias: %s" , neuron.synapses[ 0 ].weight , neuron.synapses[ 1 ].weight , neuron.bias ) ;
 			
 			sample = samples[ i % samples.length ] ;
 			
 			output = network.forwardCycle( sample ) ;
 			
-			error = sample.expected - output.output ;
+			error = sample.expected - neuron.signal ;
 			errorList.push( error ) ;
 			
-			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
+			console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , sample.x , sample.y , sample.expected , neuron.signal , error ) ;
 			
-			network.backwardCycle( sample.expected ) ;
+			network.backwardCycle( [ sample.expected ] , true ) ;
+			network.applyCorrection( 0.8 ) ;
 		}
 		
 		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
