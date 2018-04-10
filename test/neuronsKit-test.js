@@ -149,14 +149,14 @@ describe( "Single neuron learning" , function() {
 			
 			sample = samples[ i % samples.length ] ;
 			
-			output = network.process( sample ) ;
+			output = network.forwardCycle( sample ) ;
 			
 			error = sample.expected - output.output ;
 			errorList.push( error ) ;
 			
 			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
 			
-			network.backwardCorrection( { output: sample.expected } ) ;
+			network.backwardCycle( sample.expected ) ;
 		}
 		
 		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
