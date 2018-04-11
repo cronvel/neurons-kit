@@ -134,6 +134,7 @@ describe( "Single neuron learning" , function() {
 		neuron.addInput( inputY ) ;
 		
 		network.init() ;
+		network.randomize() ;
 		
 		samples = [
 			{ x: 0 , y: 0 , expected: 0 } ,
@@ -142,7 +143,7 @@ describe( "Single neuron learning" , function() {
 			{ x: 1 , y: 1 , expected: 1 }
 		] ;
 		
-		//learningSample = 5000 ; // /!\ TMP TMP TMP /!\
+		learningSample = 50 ; // /!\ TMP TMP TMP /!\
 		
 		for ( i = 0 ; i < learningSample ; i ++ )
 		{
@@ -157,8 +158,8 @@ describe( "Single neuron learning" , function() {
 			
 			console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , sample.x , sample.y , sample.expected , neuron.signal , error ) ;
 			
-			network.backwardCycle( [ sample.expected ] , true ) ;
-			network.applyCorrection( 0.8 ) ;
+			network.backwardCycle( [ sample.expected ] , 0.05 ) ;
+			network.applyCorrection( 0.8 , 0.5 ) ;
 		}
 		
 		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
