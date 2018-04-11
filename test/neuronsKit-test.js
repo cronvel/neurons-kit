@@ -118,8 +118,7 @@ describe( "Network" , function() {
 describe( "Single neuron learning" , function() {
 	
 	it( "zzz logical AND learning" , function() {
-		
-		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
+		var samples , output , averageError ;
 		
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
@@ -137,181 +136,117 @@ describe( "Single neuron learning" , function() {
 		network.randomize() ;
 		
 		samples = [
-			{ x: 0 , y: 0 , expected: 0 } ,
-			{ x: 0 , y: 1 , expected: 0 } ,
-			{ x: 1 , y: 0 , expected: 0 } ,
-			{ x: 1 , y: 1 , expected: 1 }
+			[ [ 0 , 0 ] , [ 0 ] ] ,
+			[ [ 0 , 1 ] , [ 0 ] ] ,
+			[ [ 1 , 0 ] , [ 0 ] ] ,
+			[ [ 1 , 1 ] , [ 1 ] ]
 		] ;
 		
-		learningSample = 50 ; // /!\ TMP TMP TMP /!\
+		averageError = network.train( samples , {
+			maxRound: 200 ,
+			maxError: 0.01
+		} ) ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			console.log( "\nWx: %s , Wy: %s , bias: %s" , neuron.synapses[ 0 ].weight , neuron.synapses[ 1 ].weight , neuron.bias ) ;
-			
-			sample = samples[ i % samples.length ] ;
-			
-			output = network.forwardCycle( sample ) ;
-			
-			error = sample.expected - neuron.signal ;
-			errorList.push( error ) ;
-			
-			console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , sample.x , sample.y , sample.expected , neuron.signal , error ) ;
-			
-			network.backwardCycle( [ sample.expected ] , 0.05 ) ;
-			network.applyCorrection( 0.8 , 0.5 ) ;
-		}
-		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
-		
-		//console.log( averageError ) ;
-		
-		expect( averageError ).to.be( 0 ) ;
+		expect( averageError ).to.be.within( 0 , 0.01 ) ;
 	} ) ;
 	
-	it( "logical OR learning" , function() {
+	it( "xxx logical OR learning" , function() {
+		var samples , output , averageError ;
 		
-		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			neuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron() ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( neuron , 'output' ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addOutput( 'output' , neuron ) ;
+		neuron.addInput( inputX ) ;
+		neuron.addInput( inputY ) ;
 		
-		inputX.connectTo( neuron , 0 ) ;
-		inputY.connectTo( neuron , 0 ) ;
+		network.init() ;
+		network.randomize() ;
 		
 		samples = [
-			{ x: 0 , y: 0 , expected: 0 } ,
-			{ x: 0 , y: 1 , expected: 1 } ,
-			{ x: 1 , y: 0 , expected: 1 } ,
-			{ x: 1 , y: 1 , expected: 1 }
+			[ [ 0 , 0 ] , [ 0 ] ] ,
+			[ [ 0 , 1 ] , [ 1 ] ] ,
+			[ [ 1 , 0 ] , [ 1 ] ] ,
+			[ [ 1 , 1 ] , [ 1 ] ]
 		] ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
-			
-			sample = samples[ i % samples.length ] ;
-			
-			output = network.feedForward( sample ) ;
-			
-			error = sample.expected - output.output ;
-			errorList.push( error ) ;
-			
-			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: sample.expected } ) ;
-		}
+		averageError = network.train( samples , {
+			maxRound: 200 ,
+			maxError: 0.1
+		} ) ;
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
-		
-		//console.log( averageError ) ;
-		
-		expect( averageError ).to.be( 0 ) ;
+		expect( averageError ).to.be.within( 0 , 0.1 ) ;
 	} ) ;
 	
 	it( "logical NAND learning" , function() {
+		var samples , output , averageError ;
 		
-		var i , samples , sample , learningSample = 25 , x , y , output , error , errorList = [] , averageError = 0 ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			neuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron() ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( neuron , 'output' ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addOutput( 'output' , neuron ) ;
+		neuron.addInput( inputX ) ;
+		neuron.addInput( inputY ) ;
 		
-		inputX.connectTo( neuron , 0 ) ;
-		inputY.connectTo( neuron , 0 ) ;
+		network.init() ;
+		network.randomize() ;
 		
 		samples = [
-			{ x: 0 , y: 0 , expected: 1 } ,
-			{ x: 0 , y: 1 , expected: 1 } ,
-			{ x: 1 , y: 0 , expected: 1 } ,
-			{ x: 1 , y: 1 , expected: 0 }
+			[ [ 0 , 0 ] , [ 1 ] ] ,
+			[ [ 0 , 1 ] , [ 1 ] ] ,
+			[ [ 1 , 0 ] , [ 1 ] ] ,
+			[ [ 1 , 1 ] , [ 0 ] ]
 		] ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
-			
-			sample = samples[ i % samples.length ] ;
-			
-			output = network.feedForward( sample ) ;
-			
-			error = sample.expected - output.output ;
-			errorList.push( error ) ;
-			
-			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: sample.expected } ) ;
-		}
+		averageError = network.train( samples , {
+			maxRound: 200 ,
+			maxError: 0.1
+		} ) ;
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
-		
-		//console.log( averageError ) ;
-		
-		expect( averageError ).to.be( 0 ) ;
+		expect( averageError ).to.be.within( 0 , 0.1 ) ;
 	} ) ;
 	
 	it( "logical NOR learning" , function() {
+		var samples , output , averageError ;
 		
-		var i , samples , sample , learningSample = 30 , x , y , output , error , errorList = [] , averageError = 0 ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			neuron = new nk.Neuron( { transfer: nk.transferFunctions.relu } ) ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron() ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( neuron , 'output' ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addOutput( 'output' , neuron ) ;
+		neuron.addInput( inputX ) ;
+		neuron.addInput( inputY ) ;
 		
-		inputX.connectTo( neuron , 0 ) ;
-		inputY.connectTo( neuron , 0 ) ;
+		network.init() ;
+		network.randomize() ;
 		
 		samples = [
-			{ x: 0 , y: 0 , expected: 1 } ,
-			{ x: 0 , y: 1 , expected: 0 } ,
-			{ x: 1 , y: 0 , expected: 0 } ,
-			{ x: 1 , y: 1 , expected: 0 }
+			[ [ 0 , 0 ] , [ 1 ] ] ,
+			[ [ 0 , 1 ] , [ 0 ] ] ,
+			[ [ 1 , 0 ] , [ 0 ] ] ,
+			[ [ 1 , 1 ] , [ 0 ] ]
 		] ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
-			
-			sample = samples[ i % samples.length ] ;
-			
-			output = network.feedForward( sample ) ;
-			
-			error = sample.expected - output.output ;
-			errorList.push( error ) ;
-			
-			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: sample.expected } ) ;
-		}
+		averageError = network.train( samples , {
+			maxRound: 200 ,
+			maxError: 0.1
+		} ) ;
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
-		
-		//console.log( averageError ) ;
-		
-		expect( averageError ).to.be( 0 ) ;
+		expect( averageError ).to.be.within( 0 , 0.1 ) ;
 	} ) ;
 	
 	it( "Affine 'ax + b' learning" , function() {

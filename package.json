@@ -7,7 +7,9 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "array-kit": "^0.1.5"
+  },
   "devDependencies": {
     "expect.js": "^0.3.1"
   },
