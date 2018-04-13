@@ -143,8 +143,11 @@ describe( "Single neuron learning" , function() {
 		] ;
 		
 		averageError = network.train( samples , {
-			maxRound: 200 ,
-			maxError: 0.01
+			maxRound: 30 ,
+			maxError: 0.01 ,
+			slippy: true ,
+			learningRate: 0.8 ,
+			inertiaRate: 0.5
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.01 ) ;
