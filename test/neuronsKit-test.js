@@ -117,7 +117,7 @@ describe( "Network" , function() {
 
 describe( "Single neuron learning" , function() {
 	
-	it( "zzz logical AND learning" , function() {
+	it( "logical AND learning" , function() {
 		var samples , output , averageError ;
 		
 		var network = new nk.Network() ,
@@ -143,7 +143,7 @@ describe( "Single neuron learning" , function() {
 		] ;
 		
 		averageError = network.train( samples , {
-			maxRound: 30 ,
+			maxRound: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
 			learningRate: 0.8 ,
@@ -153,7 +153,7 @@ describe( "Single neuron learning" , function() {
 		expect( averageError ).to.be.within( 0 , 0.01 ) ;
 	} ) ;
 	
-	it( "xxx logical OR learning" , function() {
+	it( "logical OR learning" , function() {
 		var samples , output , averageError ;
 		
 		var network = new nk.Network() ,
@@ -180,7 +180,10 @@ describe( "Single neuron learning" , function() {
 		
 		averageError = network.train( samples , {
 			maxRound: 200 ,
-			maxError: 0.1
+			maxError: 0.01 ,
+			slippy: true ,
+			learningRate: 0.8 ,
+			inertiaRate: 0.5
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.1 ) ;
@@ -213,7 +216,10 @@ describe( "Single neuron learning" , function() {
 		
 		averageError = network.train( samples , {
 			maxRound: 200 ,
-			maxError: 0.1
+			maxError: 0.01 ,
+			slippy: true ,
+			learningRate: 0.8 ,
+			inertiaRate: 0.5
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.1 ) ;
@@ -246,7 +252,10 @@ describe( "Single neuron learning" , function() {
 		
 		averageError = network.train( samples , {
 			maxRound: 200 ,
-			maxError: 0.1
+			maxError: 0.01 ,
+			slippy: true ,
+			learningRate: 0.8 ,
+			inertiaRate: 0.5
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.1 ) ;
@@ -398,61 +407,90 @@ describe( "Single neuron learning" , function() {
 
 describe( "Multiple neurons learning" , function() {
 	
-	it( "logical XOR learning" , function() {
+	it( "logical XOR1 learning" , function() {
+		var samples , output , averageError ;
 		
-		var i , samples , sample , learningSample = 300 , x , y , output , error , errorList = [] , averageError = 0 ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			hiddenNeuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ,
+			neuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			hiddenNeuron1 = nk.createNeuron() ,
-			hiddenNeuron2 = nk.createNeuron() ,
-			outputNeuron = nk.createNeuron() ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( neuron , 'output' ) ;
+		network.addHidden( hiddenNeuron ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addHiddenNeuron( hiddenNeuron1 ) ;
-		network.addHiddenNeuron( hiddenNeuron2 ) ;
-		network.addOutput( 'output' , outputNeuron ) ;
+		hiddenNeuron.addInput( inputX ) ;
+		hiddenNeuron.addInput( inputY ) ;
 		
-		inputX.connectTo( hiddenNeuron1 , 0 ) ;
-		inputY.connectTo( hiddenNeuron1 , 0 ) ;
-		inputX.connectTo( hiddenNeuron2 , 0 ) ;
-		inputY.connectTo( hiddenNeuron2 , 0 ) ;
+		neuron.addInput( inputX ) ;
+		neuron.addInput( inputY ) ;
+		neuron.addInput( hiddenNeuron ) ;
 		
-		hiddenNeuron1.connectTo( outputNeuron , 0 ) ;
-		hiddenNeuron2.connectTo( outputNeuron , 0 ) ;
+		network.init() ;
+		network.randomize() ;
 		
 		samples = [
-			{ x: 0 , y: 0 , expected: 0 } ,
-			{ x: 0 , y: 1 , expected: 1 } ,
-			{ x: 1 , y: 0 , expected: 1 } ,
-			{ x: 1 , y: 1 , expected: 0 }
+			[ [ 0 , 0 ] , [ 0 ] ] ,
+			[ [ 0 , 1 ] , [ 1 ] ] ,
+			[ [ 1 , 0 ] , [ 1 ] ] ,
+			[ [ 1 , 1 ] , [ 0 ] ]
 		] ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
-			
-			sample = samples[ i % samples.length ] ;
-			
-			output = network.feedForward( sample ) ;
-			
-			error = sample.expected - output.output ;
-			errorList.push( error ) ;
-			
-			console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , sample.x , sample.y , sample.expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: sample.expected } ) ;
-		}
+		averageError = network.train( samples , {
+			maxRound: 200 ,
+			maxError: 0.01 ,
+			slippy: false ,
+			learningRate: 0.5 ,
+			inertiaRate: 0.5
+		} ) ;
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
+		expect( averageError ).to.be.within( 0 , 0.01 ) ;
+	} ) ;
+	
+	it( "logical XOR2 learning" , function() {
+		var samples , output , averageError ;
 		
-		console.log( averageError ) ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			h1 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ,
+			h2 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ,
+			output = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
 		
-		expect( averageError ).to.be( 0 ) ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( output , 'output' ) ;
+		network.addHidden( h1 ) ;
+		network.addHidden( h2 ) ;
+		
+		h1.addInput( inputX ) ;
+		h1.addInput( inputY ) ;
+		h2.addInput( inputX ) ;
+		h2.addInput( inputY ) ;
+		output.addInput( h1 ) ;
+		output.addInput( h2 ) ;
+		
+		network.init() ;
+		network.randomize() ;
+		
+		samples = [
+			[ [ 0 , 0 ] , [ 0 ] ] ,
+			[ [ 0 , 1 ] , [ 1 ] ] ,
+			[ [ 1 , 0 ] , [ 1 ] ] ,
+			[ [ 1 , 1 ] , [ 0 ] ]
+		] ;
+		
+		averageError = network.train( samples , {
+			maxRound: 200 ,
+			maxError: 0.01 ,
+			slippy: false ,
+			learningRate: 0.5 ,
+			inertiaRate: 0.5
+		} ) ;
+		
+		expect( averageError ).to.be.within( 0 , 0.01 ) ;
 	} ) ;
 } ) ;
 
