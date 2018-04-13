@@ -413,20 +413,20 @@ describe( "Multiple neurons learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			hiddenNeuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ,
-			neuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
+			hiddenNeuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ,
+			output = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( neuron , 'output' ) ;
+		network.addOutput( output , 'output' ) ;
 		network.addHidden( hiddenNeuron ) ;
 		
 		hiddenNeuron.addInput( inputX ) ;
 		hiddenNeuron.addInput( inputY ) ;
 		
-		neuron.addInput( inputX ) ;
-		neuron.addInput( inputY ) ;
-		neuron.addInput( hiddenNeuron ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
+		output.addInput( hiddenNeuron ) ;
 		
 		network.init() ;
 		network.randomize() ;
@@ -455,9 +455,9 @@ describe( "Multiple neurons learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			h1 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ,
-			h2 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ,
-			output = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
+			h1 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ,
+			h2 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ,
+			output = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -483,11 +483,11 @@ describe( "Multiple neurons learning" , function() {
 		] ;
 		
 		averageError = network.train( samples , {
-			maxRound: 200 ,
+			maxRound: 20 ,
 			maxError: 0.01 ,
 			slippy: false ,
 			learningRate: 0.5 ,
-			inertiaRate: 0.5
+			inertiaRate: 0
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.01 ) ;
