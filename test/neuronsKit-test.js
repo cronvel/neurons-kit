@@ -143,11 +143,11 @@ describe( "Single neuron learning" , function() {
 		] ;
 		
 		averageError = network.train( samples , {
-			maxRound: 200 ,
+			maxRound: 2000 ,
 			maxError: 0.01 ,
 			slippy: true ,
-			learningRate: 0.8 ,
-			inertiaRate: 0.5
+			learningRate: 0.5 ,
+			inertiaRate: 0.2
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.01 ) ;
@@ -483,11 +483,72 @@ describe( "Multiple neurons learning" , function() {
 		] ;
 		
 		averageError = network.train( samples , {
-			maxRound: 20 ,
+			maxRound: 2000 ,
 			maxError: 0.01 ,
-			slippy: false ,
+			slippy: true ,
 			learningRate: 0.5 ,
-			inertiaRate: 0
+			inertiaRate: 0.2
+		} ) ;
+		
+		expect( averageError ).to.be.within( 0 , 0.01 ) ;
+	} ) ;
+	
+	it( "logical XOR5 learning" , function() {
+		var samples , output , averageError ;
+		//var tFn = nk.transferFunctions.sigmoid.hard ;
+		var tFn = nk.transferFunctions.relu ;
+		
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			h1 = new nk.Neuron( { transfer: tFn } ) ,
+			h2 = new nk.Neuron( { transfer: tFn } ) ,
+			h3 = new nk.Neuron( { transfer: tFn } ) ,
+			h4 = new nk.Neuron( { transfer: tFn } ) ,
+			h5 = new nk.Neuron( { transfer: tFn } ) ,
+			output = new nk.Neuron( { transfer: tFn } ) ;
+		
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( output , 'output' ) ;
+		network.addHidden( h1 ) ;
+		network.addHidden( h2 ) ;
+		network.addHidden( h3 ) ;
+		network.addHidden( h4 ) ;
+		network.addHidden( h5 ) ;
+		
+		h1.addInput( inputX ) ;
+		h1.addInput( inputY ) ;
+		h2.addInput( inputX ) ;
+		h2.addInput( inputY ) ;
+		h3.addInput( inputX ) ;
+		h3.addInput( inputY ) ;
+		h4.addInput( inputX ) ;
+		h4.addInput( inputY ) ;
+		h5.addInput( inputX ) ;
+		h5.addInput( inputY ) ;
+		output.addInput( h1 ) ;
+		output.addInput( h2 ) ;
+		output.addInput( h3 ) ;
+		output.addInput( h4 ) ;
+		output.addInput( h5 ) ;
+		
+		network.init() ;
+		network.randomize() ;
+		
+		samples = [
+			[ [ 0 , 0 ] , [ 0 ] ] ,
+			[ [ 0 , 1 ] , [ 1 ] ] ,
+			[ [ 1 , 0 ] , [ 1 ] ] ,
+			[ [ 1 , 1 ] , [ 0 ] ]
+		] ;
+		
+		averageError = network.train( samples , {
+			maxRound: 2000 ,
+			maxError: 0.01 ,
+			slippy: true ,
+			learningRate: 0.5 ,
+			inertiaRate: 0.2
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.01 ) ;
