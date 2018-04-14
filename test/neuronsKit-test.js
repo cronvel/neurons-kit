@@ -543,8 +543,8 @@ describe( "Multiple neurons learning" , function() {
 			[ [ 1 , 1 ] , [ 0 ] ]
 		] ;
 		
-		averageError = network.train( samples , {
-			maxRound: 2000 ,
+		averageError = network.trainBatch( samples , {
+			maxRound: 3 ,
 			maxError: 0.01 ,
 			slippy: true ,
 			learningRate: 0.5 ,
