@@ -123,7 +123,7 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.transferFunctions.relu } ) ;
+			neuron = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -159,7 +159,7 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
+			neuron = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -195,7 +195,7 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid } ) ;
+			neuron = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -231,7 +231,7 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.transferFunctions.relu } ) ;
+			neuron = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -413,8 +413,8 @@ describe( "Multiple neurons learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			hiddenNeuron = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ,
-			output = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ;
+			hiddenNeuron = new nk.Neuron( { transfer: nk.tFn.sigmoid.hard } ) ,
+			output = new nk.Neuron( { transfer: nk.tFn.sigmoid.hard } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -451,13 +451,15 @@ describe( "Multiple neurons learning" , function() {
 	
 	it( "logical XOR2 learning" , function() {
 		var samples , output , averageError ;
+		var tFn = nk.tFn.sigmoid.hard ;
+		//var tFn = nk.tFn.relu ;
 		
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			h1 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ,
-			h2 = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ,
-			output = new nk.Neuron( { transfer: nk.transferFunctions.sigmoid.hard } ) ;
+			h1 = new nk.Neuron( { transfer: tFn } ) ,
+			h2 = new nk.Neuron( { transfer: tFn } ) ,
+			output = new nk.Neuron( { transfer: nk.tFn.sigmoid.hard } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -495,8 +497,8 @@ describe( "Multiple neurons learning" , function() {
 	
 	it( "logical XOR5 learning" , function() {
 		var samples , output , averageError ;
-		//var tFn = nk.transferFunctions.sigmoid.hard ;
-		var tFn = nk.transferFunctions.relu ;
+		//var tFn = nk.tFn.sigmoid.hard ;
+		var tFn = nk.tFn.relu ;
 		
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
