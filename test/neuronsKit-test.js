@@ -439,13 +439,13 @@ describe( "Multiple neurons learning" , function() {
 		
 		averageError = network.train( samples , {
 			maxRound: 2000 ,
-			maxError: 0.01 ,
+			maxError: 0.05 ,
 			slippy: false ,
 			learningRate: 0.5 ,
 			inertiaRate: 0.5
 		} ) ;
 		
-		expect( averageError ).to.be.within( 0 , 0.01 ) ;
+		expect( averageError ).to.be.within( 0 , 0.05 ) ;
 	} ) ;
 	
 	it( "logical XOR2 learning" , function() {
@@ -485,13 +485,13 @@ describe( "Multiple neurons learning" , function() {
 		
 		averageError = network.train( samples , {
 			maxRound: 2000 ,
-			maxError: 0.01 ,
+			maxError: 0.05 ,
 			slippy: true ,
 			learningRate: 0.5 ,
 			inertiaRate: 0.2
 		} ) ;
 		
-		expect( averageError ).to.be.within( 0 , 0.01 ) ;
+		expect( averageError ).to.be.within( 0 , 0.05 ) ;
 	} ) ;
 	
 	it( "logical XOR5 learning" , function() {
@@ -545,14 +545,14 @@ describe( "Multiple neurons learning" , function() {
 		] ;
 		
 		averageError = network.train( samples , {
-			maxRound: 200 ,
-			maxError: 0.01 ,
+			maxRound: 2000 ,
+			maxError: 0.05 ,
 			slippy: true ,
 			learningRate: 0.5 ,
 			inertiaRate: 0.2
 		} ) ;
 		
-		expect( averageError ).to.be.within( 0 , 0.01 ) ;
+		expect( averageError ).to.be.within( 0 , 0.05 ) ;
 	} ) ;
 } ) ;
 
