@@ -123,14 +123,14 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
+			output = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( neuron , 'output' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		neuron.addInput( inputX ) ;
-		neuron.addInput( inputY ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
 		
 		network.init() ;
 		network.randomize() ;
@@ -159,14 +159,14 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
+			output = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( neuron , 'output' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		neuron.addInput( inputX ) ;
-		neuron.addInput( inputY ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
 		
 		network.init() ;
 		network.randomize() ;
@@ -195,14 +195,14 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
+			output = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( neuron , 'output' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		neuron.addInput( inputX ) ;
-		neuron.addInput( inputY ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
 		
 		network.init() ;
 		network.randomize() ;
@@ -231,14 +231,14 @@ describe( "Single neuron learning" , function() {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			neuron = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
+			output = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
 		
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( neuron , 'output' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		neuron.addInput( inputX ) ;
-		neuron.addInput( inputY ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
 		
 		network.init() ;
 		network.randomize() ;
@@ -262,144 +262,143 @@ describe( "Single neuron learning" , function() {
 	} ) ;
 	
 	it( "Affine 'ax + b' learning" , function() {
+		var samples = [] , output , averageError , sampleSize = 40 ;
 		
-		var i , learningSample = 80 , x , output , a , b , c , error , errorList = [] , averageError = 0 ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'linear' , bias: -10 + Math.random() * 20 } ) ;
+		network.addInput( inputX , 'x' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addOutput( 'output' , neuron ) ;
+		output.addInput( inputX ) ;
 		
-		a = Math.floor( -10 + Math.random() * 21 ) ;
-		b = Math.floor( -10 + Math.random() * 21 ) ;
+		network.init() ;
+		network.randomize() ;
 		
-		inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		var a = Math.floor( -10 + Math.random() * 21 ) ;
+		var b = Math.floor( -10 + Math.random() * 21 ) ;
+		var x ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x) = %sx + %s --------" , i , a , b ) ;
-			//console.log( "Wx: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , - network.outputs.output.bias ) ;
-			
+		console.log( a + 'x' + ( b < 0 ? b : '+' + b ) ) ;
+		
+		while ( sampleSize -- ) {
 			x = -10 + Math.random() * 20 ;
-			expected = a * x + b ;
-			
-			output = network.feedForward( { x: x } ) ;
-			
-			error = expected - output.output ;
-			errorList.push( error ) ;
-			
-			//console.log( "x: %s , expected: %s , output: %s , error: %s" , x , expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: expected } ) ;
+			samples.push( [ [ x ] , [ a * x + b ] ] ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
+		console.log( "Samples:" , samples ) ;
 		
-		//console.log( averageError ) ;
+		averageError = network.train( samples , {
+			maxRound: 40 ,
+			maxError: 0.01 ,
+			slippy: false ,
+			learningRate: 0.5 ,
+			inertiaRate: 0
+		} ) ;
 		
-		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
+		console.log( a + 'x' + ( b < 0 ? b : '+' + b ) ) ;
+		
+		expect( averageError ).to.be.within( 0 , 0.1 ) ;
 	} ) ;
 	
 	it( "Affine 'ax + by + c' learning" , function() {
 		
-		var i , learningSample = 150 , x , y , output , a , b , c , error , errorList = [] , averageError = 0 ;
+		var samples = [] , output , averageError , sampleSize = 40 ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'linear' , bias: -10 + Math.random() * 20 } ) ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addOutput( 'output' , neuron ) ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		a = Math.floor( -10 + Math.random() * 21 ) ;
-		b = Math.floor( -10 + Math.random() * 21 ) ;
-		c = Math.floor( -10 + Math.random() * 21 ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
 		
-		inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
-		inputY.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		network.init() ;
+		network.randomize() ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %s --------" , i , a , b , c ) ;
-			//console.log( "Wx: %s , Wy: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
-			
+		var a = Math.floor( -10 + Math.random() * 21 ) ;
+		var b = Math.floor( -10 + Math.random() * 21 ) ;
+		var c = Math.floor( -10 + Math.random() * 21 ) ;
+		var x , y ;
+		
+		console.log( a + 'x' + ( b < 0 ? b : '+' + b ) + 'y' + ( c < 0 ? c : '+' + c ) ) ;
+		
+		while ( sampleSize -- ) {
 			x = -10 + Math.random() * 20 ;
 			y = -10 + Math.random() * 20 ;
-			expected = a * x + b * y + c ;
-			
-			output = network.feedForward( { x: x , y: y } ) ;
-			
-			error = expected - output.output ;
-			errorList.push( error ) ;
-			
-			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: expected } ) ;
+			samples.push( [ [ x , y ] , [ a * x + b * y + c ] ] ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
+		console.log( "Samples:" , samples ) ;
 		
-		//console.log( averageError ) ;
+		averageError = network.train( samples , {
+			maxRound: 40 ,
+			maxError: 0.01 ,
+			slippy: false ,
+			learningRate: 0.5 ,
+			inertiaRate: 0
+		} ) ;
 		
-		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
+		console.log( a + 'x' + ( b < 0 ? b : '+' + b ) + 'y' + ( c < 0 ? c : '+' + c ) ) ;
+		
+		expect( averageError ).to.be.within( 0 , 0.1 ) ;
 	} ) ;
 	
-	it( "Affine 'ax + by + cx + d' learning" , function() {
+	it( "Affine 'ax + by + cz + d' learning" , function() {
 		
-		var i , learningSample = 250 , x , y , z , output , a , b , c , d , error , errorList = [] , averageError = 0 ;
+		var samples = [] , output , averageError , sampleSize = 40 ;
 		
-		var network = nk.createNetwork() ,
-			inputX = nk.createSignalEmitter() ,
-			inputY = nk.createSignalEmitter() ,
-			inputZ = nk.createSignalEmitter() ,
-			neuron = nk.createNeuron( { transfer: 'linear' , bias: -10 + Math.random() * 20 } ) ;
+		var network = new nk.Network() ,
+			inputX = new nk.SignalEmitter() ,
+			inputY = new nk.SignalEmitter() ,
+			inputZ = new nk.SignalEmitter() ,
+			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
 		
-		network.addInput( 'x' , inputX ) ;
-		network.addInput( 'y' , inputY ) ;
-		network.addInput( 'z' , inputZ ) ;
-		network.addOutput( 'output' , neuron ) ;
+		network.addInput( inputX , 'x' ) ;
+		network.addInput( inputY , 'y' ) ;
+		network.addInput( inputZ , 'z' ) ;
+		network.addOutput( output , 'output' ) ;
 		
-		a = Math.floor( -10 + Math.random() * 21 ) ;
-		b = Math.floor( -10 + Math.random() * 21 ) ;
-		c = Math.floor( -10 + Math.random() * 21 ) ;
-		d = Math.floor( -10 + Math.random() * 21 ) ;
+		output.addInput( inputX ) ;
+		output.addInput( inputY ) ;
+		output.addInput( inputZ ) ;
 		
-		inputX.connectTo( neuron , -10 + Math.random() * 20 ) ;
-		inputY.connectTo( neuron , -10 + Math.random() * 20 ) ;
-		inputZ.connectTo( neuron , -10 + Math.random() * 20 ) ;
+		network.init() ;
+		network.randomize() ;
 		
-		for ( i = 0 ; i < learningSample ; i ++ )
-		{
-			//console.log( "\n-------- #%s -------- f(x,y) = %sx + %sy + %sz + %s --------" , i , a , b , c , d ) ;
-			//console.log( "Wx: %s , Wy: %s , Wz: %s , bias: %s" , network.outputs.output.synapses[ 0 ].weight , network.outputs.output.synapses[ 1 ].weight , network.outputs.output.synapses[ 1 ].weight , - network.outputs.output.bias ) ;
-			
+		var a = Math.floor( -10 + Math.random() * 21 ) ;
+		var b = Math.floor( -10 + Math.random() * 21 ) ;
+		var c = Math.floor( -10 + Math.random() * 21 ) ;
+		var d = Math.floor( -10 + Math.random() * 21 ) ;
+		var x , y , z ;
+		
+		console.log( a + 'x' + ( b < 0 ? b : '+' + b ) + 'y' + ( c < 0 ? c : '+' + c ) + 'z' + ( d < 0 ? d : '+' + d ) ) ;
+		
+		while ( sampleSize -- ) {
 			x = -10 + Math.random() * 20 ;
 			y = -10 + Math.random() * 20 ;
 			z = -10 + Math.random() * 20 ;
-			expected = a * x + b * y + c * z + d ;
-			
-			output = network.feedForward( { x: x , y: y , z: z } ) ;
-			
-			error = expected - output.output ;
-			errorList.push( error ) ;
-			
-			//console.log( "x: %s , y: %s , expected: %s , output: %s , error: %s" , x , y , expected , output.output , error ) ;
-			
-			network.backwardCorrection( { output: expected } ) ;
+			samples.push( [ [ x , y , z ] , [ a * x + b * y + c * z + d ] ] ) ;
 		}
 		
-		for ( i = learningSample - 20 ; i < learningSample ; i ++ ) { averageError += Math.abs( errorList[ i ] ) ; }
-		averageError = averageError / 20 ;
+		console.log( "Samples:" , samples ) ;
 		
-		//console.log( averageError ) ;
+		averageError = network.train( samples , {
+			maxRound: 40 ,
+			maxError: 0.01 ,
+			slippy: false ,
+			learningRate: 0.5 ,
+			inertiaRate: 0
+		} ) ;
 		
-		expect( averageError ).to.be.within( -0.1 , 0.1 ) ;
+		console.log( a + 'x' + ( b < 0 ? b : '+' + b ) + 'y' + ( c < 0 ? c : '+' + c ) + 'z' + ( d < 0 ? d : '+' + d ) ) ;
+		
+		expect( averageError ).to.be.within( 0 , 0.1 ) ;
 	} ) ;
 } ) ;
 
