@@ -556,5 +556,3 @@ describe( "Multiple neurons learning" , function() {
 	} ) ;
 } ) ;
 
-
-
