@@ -290,7 +290,7 @@ describe( "Single neuron learning" , function() {
 		
 		averageError = network.train( samples , {
 			maxRound: 100 ,
-			maxError: 0.00001 ,
+			maxError: 0.001 ,
 			learningRate: 0.4
 		} ) ;
 		
