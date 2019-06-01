@@ -146,7 +146,7 @@ describe( "Single neuron learning" , function() {
 			maxRound: 2000 ,
 			maxError: 0.01 ,
 			slippy: true ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0.2
 		} ) ;
 		
@@ -182,7 +182,7 @@ describe( "Single neuron learning" , function() {
 			maxRound: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
-			learningRate: 0.8 ,
+			learningRate: 0.4 ,
 			inertiaRate: 0.5
 		} ) ;
 		
@@ -218,7 +218,7 @@ describe( "Single neuron learning" , function() {
 			maxRound: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
-			learningRate: 0.8 ,
+			learningRate: 0.6 ,
 			inertiaRate: 0.5
 		} ) ;
 		
@@ -254,11 +254,47 @@ describe( "Single neuron learning" , function() {
 			maxRound: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
-			learningRate: 0.8 ,
+			learningRate: 0.4 ,
 			inertiaRate: 0.5
 		} ) ;
 		
 		expect( averageError ).to.be.within( 0 , 0.1 ) ;
+	} ) ;
+	
+	it( "identity and noise learning" , function() {
+		// One input should pass through the output, the other input should be ignored
+		
+		var samples , output , averageError ;
+		
+		var network = new nk.Network() ,
+			input = new nk.SignalEmitter() ,
+			noise = new nk.SignalEmitter() ,
+			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
+		
+		network.addInput( input , 'input' ) ;
+		network.addInput( noise , 'noise' ) ;
+		network.addOutput( output , 'output' ) ;
+		
+		// Set the weight manually, we want the input to be low and noise high
+		output.addInput( input , 0.5 ) ;
+		output.addInput( noise , 2 ) ;
+		
+		network.init() ;
+		
+		samples = [
+			[ [ 0 , 0 ] , [ 0 ] ] ,
+			[ [ 0 , 1 ] , [ 0 ] ] ,
+			[ [ 1 , 0 ] , [ 1 ] ] ,
+			[ [ 1 , 1 ] , [ 1 ] ]
+		] ;
+		
+		averageError = network.train( samples , {
+			maxRound: 100 ,
+			maxError: 0.00001 ,
+			learningRate: 0.4
+		} ) ;
+		
+		expect( averageError ).to.be.within( 0 , 0.05 ) ;
 	} ) ;
 	
 	it( "Affine 'ax + b' learning" , function() {
@@ -293,7 +329,7 @@ describe( "Single neuron learning" , function() {
 			maxRound: 40 ,
 			maxError: 0.01 ,
 			slippy: false ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0
 		} ) ;
 		
@@ -340,7 +376,7 @@ describe( "Single neuron learning" , function() {
 			maxRound: 40 ,
 			maxError: 0.01 ,
 			slippy: false ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0
 		} ) ;
 		
@@ -392,7 +428,7 @@ describe( "Single neuron learning" , function() {
 			maxRound: 40 ,
 			maxError: 0.01 ,
 			slippy: false ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0
 		} ) ;
 		
@@ -441,7 +477,7 @@ describe( "Multiple neurons learning" , function() {
 			maxRound: 2000 ,
 			maxError: 0.05 ,
 			slippy: false ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0.5
 		} ) ;
 		
@@ -487,7 +523,7 @@ describe( "Multiple neurons learning" , function() {
 			maxRound: 2000 ,
 			maxError: 0.05 ,
 			slippy: true ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0.2
 		} ) ;
 		
@@ -548,7 +584,7 @@ describe( "Multiple neurons learning" , function() {
 			maxRound: 2000 ,
 			maxError: 0.05 ,
 			slippy: true ,
-			learningRate: 0.5 ,
+			learningRate: 0.25 ,
 			inertiaRate: 0.2
 		} ) ;
 		
