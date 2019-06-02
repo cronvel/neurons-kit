@@ -587,3 +587,24 @@ describe( "Multiple neurons learning" , () => {
 	} ) ;
 } ) ;
 
+
+
+describe( "Network creation" , () => {
+
+	it( "Simple fully connected layer network" , () => {
+		var network = new nk.Network() ;
+		
+		network.setNetworkModel( {
+			inputs: ['x','y','z'] ,
+			outputs: ['o1','o2'] ,
+			outputActivation: 'sigmoid' ,
+			layers: [
+				{ units: 4 , activation: 'relu6' } ,
+				{ units: 3 , activation: 'sigmoid' }
+			]
+		} ) ;
+		
+		network.orderedUnits.forEach( unit => console.log( unit ) ) ;
+	} ) ;
+} ) ;
+
