@@ -10,11 +10,9 @@
   "dependencies": {
     "array-kit": "^0.1.5"
   },
-  "devDependencies": {
-    "expect.js": "^0.3.1"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "mocha"
+    "test": "tea-time -R dot"
   },
   "repository": {
     "type": "git",
@@ -32,7 +30,7 @@
     "title": "Neurons Kit",
     "years": [
       2015,
-      2018
+      2019
     ],
     "owner": "Cédric Ronvel"
   }
