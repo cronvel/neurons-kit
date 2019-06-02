@@ -334,7 +334,6 @@ describe( "Single neuron learning" , () => {
 	} ) ;
 
 	it( "Affine 'ax + by + c' learning" , () => {
-
 		var samples = [] , averageError , sampleSize = 40 ;
 
 		var network = new nk.Network() ,
@@ -381,7 +380,6 @@ describe( "Single neuron learning" , () => {
 	} ) ;
 
 	it( "Affine 'ax + by + cz + d' learning" , () => {
-
 		var samples = [] , averageError , sampleSize = 40 ;
 
 		var network = new nk.Network() ,
@@ -438,6 +436,8 @@ describe( "Single neuron learning" , () => {
 describe( "Multiple neurons learning" , () => {
 
 	it.optional( "logical XOR1 learning" , () => {
+		// Sometime it works, sometime not, even big badass libs fail even more at converging XOR with only 2 units
+		// around 70-80% of success with 2000 epochs, momentum and slippy derivatives
 		var samples , averageError ;
 
 		var network = new nk.Network() ,
@@ -469,9 +469,9 @@ describe( "Multiple neurons learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 2000 ,
+			maxEpochs: 5000 ,
 			maxError: 0.05 ,
-			slippy: false ,
+			slippy: true ,
 			learningRate: 0.25 ,
 			momentumRate: 0.5
 		} ) ;
