@@ -118,7 +118,7 @@ describe( "Single neuron learning" , () => {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.relu } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -138,7 +138,7 @@ describe( "Single neuron learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 2000 ,
+			epochs: 2000 ,
 			maxError: 0.01 ,
 			slippy: true ,
 			learningRate: 0.25 ,
@@ -154,7 +154,7 @@ describe( "Single neuron learning" , () => {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.sigmoid } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -174,7 +174,7 @@ describe( "Single neuron learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 200 ,
+			epochs: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
 			learningRate: 0.4 ,
@@ -190,7 +190,7 @@ describe( "Single neuron learning" , () => {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.sigmoid } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.sigmoid } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -210,7 +210,7 @@ describe( "Single neuron learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 200 ,
+			epochs: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
 			learningRate: 0.6 ,
@@ -226,7 +226,7 @@ describe( "Single neuron learning" , () => {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.relu } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.relu } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -246,7 +246,7 @@ describe( "Single neuron learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 200 ,
+			epochs: 200 ,
 			maxError: 0.01 ,
 			slippy: true ,
 			learningRate: 0.4 ,
@@ -264,7 +264,7 @@ describe( "Single neuron learning" , () => {
 		var network = new nk.Network() ,
 			input = new nk.SignalEmitter() ,
 			noise = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.linear } ) ;
 
 		network.addInput( input , 'input' ) ;
 		network.addInput( noise , 'noise' ) ;
@@ -284,7 +284,7 @@ describe( "Single neuron learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 100 ,
+			epochs: 100 ,
 			maxError: 0.001 ,
 			learningRate: 0.4
 		} ) ;
@@ -297,7 +297,7 @@ describe( "Single neuron learning" , () => {
 
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.linear } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addOutput( output , 'output' ) ;
@@ -321,7 +321,7 @@ describe( "Single neuron learning" , () => {
 		console.log( "Samples:" , samples ) ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 40 ,
+			epochs: 40 ,
 			maxError: 0.01 ,
 			slippy: false ,
 			learningRate: 0.25 ,
@@ -339,7 +339,7 @@ describe( "Single neuron learning" , () => {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.linear } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -367,7 +367,7 @@ describe( "Single neuron learning" , () => {
 		console.log( "Samples:" , samples ) ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 40 ,
+			epochs: 40 ,
 			maxError: 0.01 ,
 			slippy: false ,
 			learningRate: 0.25 ,
@@ -386,7 +386,7 @@ describe( "Single neuron learning" , () => {
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
 			inputZ = new nk.SignalEmitter() ,
-			output = new nk.Neuron( { transfer: nk.tFn.linear } ) ;
+			output = new nk.Neuron( { activation: nk.aFn.linear } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -418,7 +418,7 @@ describe( "Single neuron learning" , () => {
 		console.log( "Samples:" , samples ) ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 40 ,
+			epochs: 40 ,
 			maxError: 0.01 ,
 			slippy: false ,
 			learningRate: 0.25 ,
@@ -443,8 +443,8 @@ describe( "Multiple neurons learning" , () => {
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			hiddenNeuron = new nk.Neuron( { transfer: nk.tFn.sigmoid.hard } ) ,
-			output = new nk.Neuron( { transfer: nk.tFn.sigmoid.hard } ) ;
+			hiddenNeuron = new nk.Neuron( { activation: nk.aFn.sigmoid.hard } ) ,
+			output = new nk.Neuron( { activation: nk.aFn.sigmoid.hard } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -469,7 +469,7 @@ describe( "Multiple neurons learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 5000 ,
+			epochs: 5000 ,
 			maxError: 0.05 ,
 			slippy: true ,
 			learningRate: 0.25 ,
@@ -481,15 +481,15 @@ describe( "Multiple neurons learning" , () => {
 
 	it( "logical XOR2 learning" , () => {
 		var samples , averageError ;
-		var tFn = nk.tFn.sigmoid.hard ;
-		//var tFn = nk.tFn.relu ;
+		var aFn = nk.aFn.sigmoid.hard ;
+		//var aFn = nk.aFn.relu ;
 
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			h1 = new nk.Neuron( { transfer: tFn } ) ,
-			h2 = new nk.Neuron( { transfer: tFn } ) ,
-			output = new nk.Neuron( { transfer: nk.tFn.sigmoid.hard } ) ;
+			h1 = new nk.Neuron( { activation: aFn } ) ,
+			h2 = new nk.Neuron( { activation: aFn } ) ,
+			output = new nk.Neuron( { activation: nk.aFn.sigmoid.hard } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -515,7 +515,7 @@ describe( "Multiple neurons learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 2000 ,
+			epochs: 2000 ,
 			maxError: 0.05 ,
 			slippy: true ,
 			learningRate: 0.25 ,
@@ -527,18 +527,18 @@ describe( "Multiple neurons learning" , () => {
 
 	it( "logical XOR5 learning" , () => {
 		var samples , averageError ;
-		//var tFn = nk.tFn.sigmoid.hard ;
-		var tFn = nk.tFn.relu ;
+		//var aFn = nk.aFn.sigmoid.hard ;
+		var aFn = nk.aFn.relu ;
 
 		var network = new nk.Network() ,
 			inputX = new nk.SignalEmitter() ,
 			inputY = new nk.SignalEmitter() ,
-			h1 = new nk.Neuron( { transfer: tFn } ) ,
-			h2 = new nk.Neuron( { transfer: tFn } ) ,
-			h3 = new nk.Neuron( { transfer: tFn } ) ,
-			h4 = new nk.Neuron( { transfer: tFn } ) ,
-			h5 = new nk.Neuron( { transfer: tFn } ) ,
-			output = new nk.Neuron( { transfer: tFn } ) ;
+			h1 = new nk.Neuron( { activation: aFn } ) ,
+			h2 = new nk.Neuron( { activation: aFn } ) ,
+			h3 = new nk.Neuron( { activation: aFn } ) ,
+			h4 = new nk.Neuron( { activation: aFn } ) ,
+			h5 = new nk.Neuron( { activation: aFn } ) ,
+			output = new nk.Neuron( { activation: aFn } ) ;
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
@@ -576,7 +576,7 @@ describe( "Multiple neurons learning" , () => {
 		] ;
 
 		averageError = network.train( samples , {
-			maxEpochs: 2000 ,
+			epochs: 2000 ,
 			maxError: 0.05 ,
 			slippy: true ,
 			learningRate: 0.25 ,
