@@ -595,16 +595,33 @@ describe( "Network creation" , () => {
 		var network = new nk.Network() ;
 		
 		network.setNetworkModel( {
-			inputs: ['x','y','z'] ,
+			inputs: ['x','y'] ,
 			outputs: ['o1','o2'] ,
 			outputActivation: 'sigmoid' ,
 			layers: [
-				{ units: 4 , activation: 'relu6' } ,
-				{ units: 3 , activation: 'sigmoid' }
+				{ units: 3 , activation: 'relu6' } ,
+				{ units: 2 , activation: 'sigmoid' }
 			]
 		} ) ;
 		
-		network.orderedUnits.forEach( unit => console.log( unit ) ) ;
+		/*
+		network.orderedUnits.forEach( unit => console.log( {
+			id: unit.id ,
+			bias: unit.bias ,
+			//activation: unit.activation ,
+			synapses: unit.synapses.map( s => ( { id: s.input.id , weight: s.weight } ) )
+		} ) ) ;
+		//*/
+		
+		expect( network.orderedUnits ).to.be.partially.like( [
+			{ id: 'h0:0', synapses: [ { input: { id: 'x' } }, { input: { id: 'y' } } ] } ,
+			{ id: 'h0:1', synapses: [ { input: { id: 'x' } }, { input: { id: 'y' } } ] } ,
+			{ id: 'h0:2', synapses: [ { input: { id: 'x' } }, { input: { id: 'y' } } ] } ,
+			{ id: 'h1:0', synapses: [ { input: { id: 'h0:0' } }, { input: { id: 'h0:1' } }, { input: { id: 'h0:2' } } ] } ,
+			{ id: 'h1:1', synapses: [ { input: { id: 'h0:0'} }, { input: { id: 'h0:1' } }, { input: { id: 'h0:2' } } ] } ,
+			{ id: 'o1', synapses: [ { input: { id: 'h1:0' } }, { input: { id: 'h1:1' } } ] } ,
+			{ id: 'o2', synapses: [ { input: { id: 'h1:0' } }, { input: { id: 'h1:1' } } ] }
+		] ) ;
 	} ) ;
 } ) ;
 
