@@ -592,7 +592,8 @@ describe( "Multiple neurons learning" , () => {
 describe( "Network creation" , () => {
 
 	it( "Simple fully connected layer network" , () => {
-		var network = new nk.Network() ;
+		var serialized , serialized2 , unserialized ,
+			network = new nk.Network() ;
 		
 		network.setNetworkModel( {
 			inputs: ['x','y'] ,
@@ -604,24 +605,37 @@ describe( "Network creation" , () => {
 			]
 		} ) ;
 		
-		/*
-		network.orderedUnits.forEach( unit => console.log( {
-			id: unit.id ,
-			bias: unit.bias ,
-			//activation: unit.activation ,
-			synapses: unit.synapses.map( s => ( { id: s.input.id , weight: s.weight } ) )
-		} ) ) ;
-		//*/
-		
 		expect( network.orderedUnits ).to.be.partially.like( [
-			{ id: 'h0:0', synapses: [ { input: { id: 'x' } }, { input: { id: 'y' } } ] } ,
-			{ id: 'h0:1', synapses: [ { input: { id: 'x' } }, { input: { id: 'y' } } ] } ,
-			{ id: 'h0:2', synapses: [ { input: { id: 'x' } }, { input: { id: 'y' } } ] } ,
-			{ id: 'h1:0', synapses: [ { input: { id: 'h0:0' } }, { input: { id: 'h0:1' } }, { input: { id: 'h0:2' } } ] } ,
-			{ id: 'h1:1', synapses: [ { input: { id: 'h0:0'} }, { input: { id: 'h0:1' } }, { input: { id: 'h0:2' } } ] } ,
-			{ id: 'o1', synapses: [ { input: { id: 'h1:0' } }, { input: { id: 'h1:1' } } ] } ,
-			{ id: 'o2', synapses: [ { input: { id: 'h1:0' } }, { input: { id: 'h1:1' } } ] }
+			{ id: 'h:0:0', synapses: [ { input: { id: 'i:x' } }, { input: { id: 'i:y' } } ] } ,
+			{ id: 'h:0:1', synapses: [ { input: { id: 'i:x' } }, { input: { id: 'i:y' } } ] } ,
+			{ id: 'h:0:2', synapses: [ { input: { id: 'i:x' } }, { input: { id: 'i:y' } } ] } ,
+			{ id: 'h:1:0', synapses: [ { input: { id: 'h:0:0' } }, { input: { id: 'h:0:1' } }, { input: { id: 'h:0:2' } } ] } ,
+			{ id: 'h:1:1', synapses: [ { input: { id: 'h:0:0' } }, { input: { id: 'h:0:1' } }, { input: { id: 'h:0:2' } } ] } ,
+			{ id: 'o:o1', synapses: [ { input: { id: 'h:1:0' } }, { input: { id: 'h:1:1' } } ] } ,
+			{ id: 'o:o2', synapses: [ { input: { id: 'h:1:0' } }, { input: { id: 'h:1:1' } } ] }
 		] ) ;
+		
+		serialized = network.serialize( true ) ;
+		console.log( serialized ) ;
+		unserialized = nk.Network.unserialize( serialized ) ;
+		expect( unserialized ).to.equal( network ) ;
+		
+		serialized2 = unserialized.serialize( true ) ;
+		//console.log( serialized2 ) ;
+		expect( serialized ).to.be( serialized2 ) ;
+
+		network = new nk.Network() ;
+		network.setNetworkModel( {
+			inputs: ['x','y','z','a','b','c'] ,
+			outputs: ['o1','o2','o3'] ,
+			outputActivation: 'sigmoid' ,
+			layers: [
+				{ units: 20 , activation: 'relu6' } ,
+				{ units: 10 , activation: 'sigmoid' }
+			]
+		} ) ;
+		serialized = network.serialize() ;
+		console.log( serialized ) ;
 	} ) ;
 } ) ;
 
