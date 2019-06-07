@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "array-kit": "^0.1.5",
+    "logfella": "^1.2.4",
     "seventh": "^0.7.23"
   },
   "devDependencies": {},
