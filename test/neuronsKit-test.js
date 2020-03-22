@@ -591,7 +591,7 @@ describe( "Multiple neurons learning" , () => {
 
 describe( "Network creation" , () => {
 
-	it( "Simple fully connected layer network" , () => {
+	it( "Simple fully connected layer network creation, serialization, unserialization and cloning" , () => {
 		var serialized , serialized2 , unserialized ,
 			network = new nk.Network() ;
 		
@@ -619,6 +619,7 @@ describe( "Network creation" , () => {
 		console.log( serialized ) ;
 		unserialized = nk.Network.unserialize( serialized ) ;
 		expect( unserialized ).to.equal( network ) ;
+		expect( network.clone() ).to.equal( network ) ;
 		
 		serialized2 = unserialized.serialize( true ) ;
 		//console.log( serialized2 ) ;
@@ -636,6 +637,9 @@ describe( "Network creation" , () => {
 		} ) ;
 		serialized = network.serialize() ;
 		console.log( serialized ) ;
+		unserialized = nk.Network.unserialize( serialized ) ;
+		expect( unserialized ).to.equal( network ) ;
+		expect( network.clone() ).to.equal( network ) ;
 	} ) ;
 } ) ;
 
