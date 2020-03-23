@@ -32,12 +32,14 @@
 
 const nk = require( '..' ) ;
 
+const Logfella = require( 'logfella' ) ;
+const log = Logfella.global.use( 'unit-tests' ) ;
+
 
 
 describe( "Network" , () => {
 
 	it( "Feed forward order" , () => {
-
 		var network = new nk.Network() ,
 			inputA = new nk.SignalEmitter() ,
 			inputB = new nk.SignalEmitter() ,
@@ -55,14 +57,14 @@ describe( "Network" , () => {
 
 		network.addInput( inputA , 'a' ) ;
 		network.addInput( inputB , 'b' ) ;
-		network.addOutput( outputA , 'outputA' , outputA ) ;
-		network.addOutput( outputB , 'outputB' , outputB ) ;
-		network.addHidden( hidden31 ) ;
-		network.addHidden( hidden32 ) ;
-		network.addHidden( hidden21 ) ;
-		network.addHidden( hidden22 ) ;
-		network.addHidden( hidden11 ) ;
-		network.addHidden( hidden12 ) ;
+		network.addOutputUnit( outputA , 'outputA' , outputA ) ;
+		network.addOutputUnit( outputB , 'outputB' , outputB ) ;
+		network.addHiddenUnit( hidden31 ) ;
+		network.addHiddenUnit( hidden32 ) ;
+		network.addHiddenUnit( hidden21 ) ;
+		network.addHiddenUnit( hidden22 ) ;
+		network.addHiddenUnit( hidden11 ) ;
+		network.addHiddenUnit( hidden12 ) ;
 
 		hidden11.addInput( inputA , 1 ) ;
 		hidden11.addInput( inputB , 1 ) ;
@@ -122,7 +124,7 @@ describe( "Single neuron learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 		output.addInput( inputY ) ;
@@ -158,7 +160,7 @@ describe( "Single neuron learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 		output.addInput( inputY ) ;
@@ -194,7 +196,7 @@ describe( "Single neuron learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 		output.addInput( inputY ) ;
@@ -230,7 +232,7 @@ describe( "Single neuron learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 		output.addInput( inputY ) ;
@@ -268,7 +270,7 @@ describe( "Single neuron learning" , () => {
 
 		network.addInput( input , 'input' ) ;
 		network.addInput( noise , 'noise' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		// Set the weight manually, we want the input to be low and noise high
 		output.addInput( input , 0.5 ) ;
@@ -300,7 +302,7 @@ describe( "Single neuron learning" , () => {
 			output = new nk.Neuron( { activation: nk.aFn.linear } ) ;
 
 		network.addInput( inputX , 'x' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 
@@ -343,7 +345,7 @@ describe( "Single neuron learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 		output.addInput( inputY ) ;
@@ -391,7 +393,7 @@ describe( "Single neuron learning" , () => {
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
 		network.addInput( inputZ , 'z' ) ;
-		network.addOutput( output , 'output' ) ;
+		network.addOutputUnit( output , 'output' ) ;
 
 		output.addInput( inputX ) ;
 		output.addInput( inputY ) ;
@@ -448,8 +450,8 @@ describe( "Multiple neurons learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
-		network.addHidden( hiddenNeuron ) ;
+		network.addOutputUnit( output , 'output' ) ;
+		network.addHiddenUnit( hiddenNeuron ) ;
 
 		hiddenNeuron.addInput( inputX ) ;
 		hiddenNeuron.addInput( inputY ) ;
@@ -493,9 +495,9 @@ describe( "Multiple neurons learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
-		network.addHidden( h1 ) ;
-		network.addHidden( h2 ) ;
+		network.addOutputUnit( output , 'output' ) ;
+		network.addHiddenUnit( h1 ) ;
+		network.addHiddenUnit( h2 ) ;
 
 		h1.addInput( inputX ) ;
 		h1.addInput( inputY ) ;
@@ -542,12 +544,12 @@ describe( "Multiple neurons learning" , () => {
 
 		network.addInput( inputX , 'x' ) ;
 		network.addInput( inputY , 'y' ) ;
-		network.addOutput( output , 'output' ) ;
-		network.addHidden( h1 ) ;
-		network.addHidden( h2 ) ;
-		network.addHidden( h3 ) ;
-		network.addHidden( h4 ) ;
-		network.addHidden( h5 ) ;
+		network.addOutputUnit( output , 'output' ) ;
+		network.addHiddenUnit( h1 ) ;
+		network.addHiddenUnit( h2 ) ;
+		network.addHiddenUnit( h3 ) ;
+		network.addHiddenUnit( h4 ) ;
+		network.addHiddenUnit( h5 ) ;
 
 		h1.addInput( inputX ) ;
 		h1.addInput( inputY ) ;
@@ -640,6 +642,30 @@ describe( "Network creation" , () => {
 		unserialized = nk.Network.unserialize( serialized ) ;
 		expect( unserialized ).to.equal( network ) ;
 		expect( network.clone() ).to.equal( network ) ;
+	} ) ;
+
+	it( "Create a network without connection, then add a random connection between input and output" , () => {
+		var network = new nk.Network() ,
+			inputA = new nk.SignalEmitter() ,
+			inputB = new nk.SignalEmitter() ,
+			outputA = new nk.Neuron() ,
+			outputB = new nk.Neuron() ;
+
+		network.addInput( inputA , 'a' ) ;
+		network.addInput( inputB , 'b' ) ;
+		network.addOutputUnit( outputA , 'outputA' , outputA ) ;
+		network.addOutputUnit( outputB , 'outputB' , outputB ) ;
+
+		network.init() ;
+		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 0 ) ;
+		//log.hdebug( "Network: %[6]Y" , network ) ;
+		
+		network.mutateAddConnection( { newConnectionWeight: 0.5 } ) ;
+		//log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
+		network.init() ;
+		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 1 ) ;
+		var unit = outputA.synapses.length ? outputA : outputB ;
+		expect( [ inputA , inputB ] ).to.include( unit.synapses[ 0 ].input ) ;
 	} ) ;
 } ) ;
 
