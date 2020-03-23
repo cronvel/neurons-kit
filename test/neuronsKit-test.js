@@ -57,8 +57,8 @@ describe( "Network" , () => {
 
 		network.addInput( inputA , 'a' ) ;
 		network.addInput( inputB , 'b' ) ;
-		network.addOutputUnit( outputA , 'outputA' , outputA ) ;
-		network.addOutputUnit( outputB , 'outputB' , outputB ) ;
+		network.addOutputUnit( outputA , 'outputA' ) ;
+		network.addOutputUnit( outputB , 'outputB' ) ;
 		network.addHiddenUnit( hidden31 ) ;
 		network.addHiddenUnit( hidden32 ) ;
 		network.addHiddenUnit( hidden21 ) ;
@@ -643,8 +643,13 @@ describe( "Network creation" , () => {
 		expect( unserialized ).to.equal( network ) ;
 		expect( network.clone() ).to.equal( network ) ;
 	} ) ;
+} ) ;
 
-	it( "Create a network without connection, then add a random connection between input and output" , () => {
+
+
+describe( "Mutations" , () => {
+
+	it( "New connection mutation" , () => {
 		var network = new nk.Network() ,
 			inputA = new nk.SignalEmitter() ,
 			inputB = new nk.SignalEmitter() ,
@@ -653,19 +658,98 @@ describe( "Network creation" , () => {
 
 		network.addInput( inputA , 'a' ) ;
 		network.addInput( inputB , 'b' ) ;
-		network.addOutputUnit( outputA , 'outputA' , outputA ) ;
-		network.addOutputUnit( outputB , 'outputB' , outputB ) ;
+		network.addOutputUnit( outputA , 'outputA' ) ;
+		network.addOutputUnit( outputB , 'outputB' ) ;
 
 		network.init() ;
 		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 0 ) ;
 		//log.hdebug( "Network: %[6]Y" , network ) ;
 		
-		network.mutateAddConnection( { newConnectionWeight: 0.5 } ) ;
+		var mutation = new nk.Mutation() ;
+		network.mutateAddConnection( mutation ) ;
 		//log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
 		network.init() ;
 		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 1 ) ;
 		var unit = outputA.synapses.length ? outputA : outputB ;
 		expect( [ inputA , inputB ] ).to.include( unit.synapses[ 0 ].input ) ;
 	} ) ;
+
+	it( "New unit mutation" , () => {
+		var network = new nk.Network() ,
+			inputA = new nk.SignalEmitter() ,
+			inputB = new nk.SignalEmitter() ,
+			outputA = new nk.Neuron() ,
+			outputB = new nk.Neuron() ;
+
+		network.addInput( inputA , 'a' ) ;
+		network.addInput( inputB , 'b' ) ;
+		network.addOutputUnit( outputA , 'outputA' ) ;
+		network.addOutputUnit( outputB , 'outputB' ) ;
+
+		network.init() ;
+		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 0 ) ;
+		//log.hdebug( "Network: %[6]Y" , network ) ;
+		
+		var mutation = new nk.Mutation() ;
+		network.mutateAddUnit( mutation ) ;
+		log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
+		network.init() ;
+		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 1 ) ;
+		var unit = outputA.synapses.length ? outputA : outputB ;
+		expect( network.hiddenUnits[ 0 ] ).to.be( unit.synapses[ 0 ].input ) ;
+		expect( [ inputA , inputB ] ).to.include( network.hiddenUnits[ 0 ].synapses[ 0 ].input ) ;
+	} ) ;
+
+	it( "Remove connection mutation" , () => {
+		var network = new nk.Network() ;
+		
+		network.setNetworkModel( {
+			inputs: ['a','b'] ,
+			outputs: ['outputA','outputB'] ,
+			outputActivation: 'sigmoid'
+		} ) ;
+
+		network.init() ;
+		expect( network.outputUnits[ 0 ].synapses.length + network.outputUnits[ 1 ].synapses.length ).to.be( 4 ) ;
+		log.hdebug( "Network: %[6]Y" , network ) ;
+		
+		var mutation = new nk.Mutation( {
+			removeConnectionThreshold: 1
+		} ) ;
+
+		network.mutateRemoveConnection( mutation ) ;
+		log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
+		network.init() ;
+		expect( network.outputUnits[ 0 ].synapses.length + network.outputUnits[ 1 ].synapses.length ).to.be( 3 ) ;
+	} ) ;
+
+	it( "Remove connection mutation" , () => {
+		var network = new nk.Network() ;
+		
+		network.setNetworkModel( {
+			inputs: ['a','b'] ,
+			outputs: ['outputA','outputB'] ,
+			outputActivation: 'sigmoid' ,
+			layers: [ { units: 2 , activation: 'relu' } ]
+		} ) ;
+
+		network.init() ;
+		expect( network.hiddenUnits.length ).to.be( 2 ) ;
+		expect( network.outputUnits[ 0 ].synapses.length + network.outputUnits[ 1 ].synapses.length ).to.be( 4 ) ;
+		//log.hdebug( "Network: %[6l50000]Y" , network ) ;
+		
+		var mutation = new nk.Mutation( {
+			removeUnitThreshold: 2
+		} ) ;
+
+		network.mutateRemoveUnit( mutation ) ;
+		log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
+		network.init() ;
+		expect( network.hiddenUnits.length ).to.be( 1 ) ;
+		expect( network.outputUnits[ 0 ].synapses.length + network.outputUnits[ 1 ].synapses.length ).to.be( 2 ) ;
+	} ) ;
+
+	it( "One weight mutation" ) ;
+	it( "One activation mutation" ) ;
 } ) ;
 
