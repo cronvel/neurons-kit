@@ -1,8 +1,9 @@
 
-populationSize: 1000
-testCount: 100
-versus: 1
-selectionRate: 0.15
+evolution:
+	populationSize: 1000
+	testCount: 100
+	versus: 1
+	selectionRate: 0.15
 
 mutations:
 	newConnectionChance: 0.05 ,
