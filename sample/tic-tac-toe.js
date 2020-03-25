@@ -31,91 +31,49 @@
 
 const nk = require( '..' ) ;
 const arrayKit = require( 'array-kit' ) ;
+const termkit = require( 'terminal-kit' ) ;
+const term = termkit.terminal ;
 
 const TicTacToe = require( './TicTacToe.js' ) ;
 
 
 
-var mutation = new nk.Mutation( {
-	newConnectionChance: 0.05 ,
-	removeConnectionChance: 0.02 ,
-	newUnitChance: 0.03 ,
-	removeUnitChance: 0.01 ,
-	mutateActivationChance: 0.02 ,
-	biasDelta: 0.25 ,
-	weightDelta: 0.25 ,
-	newConnectionWeight: 0.1 ,
-	newUnitBias: 0.1 ,
-	removeConnectionThreshold: 0.25 ,
-	removeUnitThreshold: 0.25 ,
-	activations: [ 'relu' , 'relu2' , 'sigmoid' , 'softPlus' ]
-} ) ;
+var game = new TicTacToe() ;
 
-var createNetworkFn = () => {
-	var network = new nk.Network() ;
-	
-	// Split input, to ease evolution, otherwise the network would have to create new units
-	// to re-create internally the "cell-is-empty" information to avoid illegal moves
-	var inputs = [] ;
-	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:self:' + index ) ) ;
-	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:other:' + index ) ) ;
+async function interactivePlay( playerName ) {
+	term( "\nBoard:\n%s" , game.boardStr() ) ;
+	term( "%s's turn: " , playerName ) ;
 
-	network.setNetworkModel( {
-		inputs ,
-		outputs: arrayKit.range( 9 ).map( index => 'board:' + index ) ,
-		outputActivation: 'sigmoid'
-	} ) ;
+	var cell = parseInt( await term.inputField().promise , 10 ) ;
 
-	network.init() ;
-	network.mutateAddConnection( mutation ) ;
-	network.randomize() ;
-	
-	return network ;
-} ;
-
-var networkPlay = ( network , board ) => {
-	var cell , score , outputs ,
-		inputs = [] ,
-		maxScore = - Infinity ;
-
-	// Split input, see above...
-	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
-	inputs.push( ... board.map( cell_ => cell_ < 0 ? 1 : 0 ) ) ;
-
-	outputs = network.process( inputs ) ;
-
-	outputs.forEach( ( output , index ) => {
-		var score = output + 0.5 * Math.random() ;
-		if ( score > maxScore ) { maxScore = score ; cell = index ; }
-	} ) ;
-	
+	term( '\n' ) ;
 	return cell ;
-} ;
-
-var testFn = async ( networks ) => {
-	var game = new TicTacToe() ;
-	
-	var winner = await game.run(
-		board => networkPlay( networks[ 0 ] , board ) ,
-		board => networkPlay( networks[ 1 ] , board )
-	) ;
-	
-	console.log( game.reason + '\n' + game.boardStr() ) ;
-	
-	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
-} ;
-
-var evolution = new nk.Evolution( {
-	createNetworkFn , testFn , mutation ,
-	versus: 1 ,
-	testCount: 5 ,
-	selectionRate: 0.15
-} ) ;
+}
 
 async function run() {
-	await evolution.init() ;
-	await evolution.runNextGeneration() ;
+	var p1 = 'Player 1' ,
+		p2 = 'Player 2' ;
+	
+	await game.run(
+		() => interactivePlay( p1 ) ,
+		() => interactivePlay( p2 )
+	) ;
+
+	term( "\nBoard:\n%s" , game.boardStr() ) ;
+	
+	if ( game.winner ) {
+		term( "\n^C%s^ ^Ywin!^ ^-%s^:\n" , game.winner > 0 ? p1 : p2 , game.reason !== "win" ? '(' + game.reason + ')' : '' ) ;
+	}
+	else {
+		term( "\n^YDraw!^:\n" ) ;
+	}
+	
+	process.exit() ;
 }
+
+term.on( 'key' , key => {
+	if ( key === 'CTRL_C' ) { process.exit() ; }
+} ) ;
 
 run() ;
 

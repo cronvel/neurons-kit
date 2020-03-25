@@ -90,21 +90,22 @@ TicTacToe.prototype.play = function( cell ) {
 
 
 TicTacToe.prototype.checkEnd = function() {
-	var i ;
+	var i ,
+		v = this.sideToPlay ;
 
 	// Check rows
 	for ( i = 0 ; i < 9 ; i += 3 ) {
-		if ( this.board[ i ] === this.board[ i + 1 ] === this.board[ i + 2 ] === this.sideToPlay ) { return this.setWinner() ; }
+		if ( this.board[ i ] === v && this.board[ i + 1 ] === v && this.board[ i + 2 ] === v ) { return this.setWinner() ; }
 	}
 
 	// Check columns
 	for ( i = 0 ; i < 3 ; i ++ ) {
-		if ( this.board[ i ] === this.board[ i + 3 ] === this.board[ i + 6 ] === this.sideToPlay ) { return this.setWinner() ; }
+		if ( this.board[ i ] === v && this.board[ i + 3 ] === v && this.board[ i + 6 ] === v ) { return this.setWinner() ; }
 	}
 
 	// Check diagonal
-	if ( this.board[ 0 ] === this.board[ 4 ] === this.board[ 8 ] === this.sideToPlay ) { return this.setWinner() ; }
-	if ( this.board[ 2 ] === this.board[ 4 ] === this.board[ 6 ] === this.sideToPlay ) { return this.setWinner() ; }
+	if ( this.board[ 0 ] === v && this.board[ 4 ] === v && this.board[ 8 ] === v ) { return this.setWinner() ; }
+	if ( this.board[ 2 ] === v && this.board[ 4 ] === v && this.board[ 6 ] === v ) { return this.setWinner() ; }
 
 	if ( this.board.every( cell => cell !== 0 ) ) { return this.setDraw() ; }
 
