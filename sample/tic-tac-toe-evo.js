@@ -108,15 +108,16 @@ var testFn = async ( networks ) => {
 	) ;
 	
 	//console.log( game.reason + '\n' + game.boardStr() ) ;
-	console.log( game.reason ) ;
+	if ( process.argv[ 3 ] === 'r' ) { console.log( game.reason ) ; }
 	
 	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
 } ;
 
 var evolution = new nk.Evolution( {
 	createNetworkFn , testFn , mutation ,
+	populationSize: 1000 ,
+	testCount: 100 ,
 	versus: 1 ,
-	testCount: 20 ,
 	selectionRate: 0.15
 } ) ;
 
@@ -132,6 +133,7 @@ async function run() {
 	await evolution.init() ;
 	
 	while ( rounds -- ) {
+		term( "Starting generation #%i (%i remaining round(s) to go)\n" , evolution.generation + 1 , rounds + 1 ) ;
 		await evolution.runNextGeneration() ;
 	}
 
