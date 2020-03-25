@@ -48,10 +48,14 @@ module.exports = TicTacToe ;
 
 
 
+TicTacToe.prototype.getBoard = function() { return [ ... this.board ] ; }
+
+
+
 // Player 1 is the positive one, and player 2 the negative one
 TicTacToe.prototype.run = function( p1Fn , p2Fn ) {
-	var userlandBoard = new Array( 9 ) ,
-		userlandPlay = this.play.bind( this ) ;
+	var cell ,
+		userlandBoard = new Array( 9 ) ;
 
 	while ( ! this.end ) {
 		userlandBoard.length = 0 ;
@@ -59,8 +63,10 @@ TicTacToe.prototype.run = function( p1Fn , p2Fn ) {
 
 		this.emit( 'position' ) ;
 
-		if ( this.turn > 0 ) { p1Fn( userlandBoard , userlandPlay ) ; }
-		else { p2Fn( userlandBoard , userlandPlay ) ; }
+		if ( this.turn > 0 ) { cell = p1Fn( userlandBoard ) ; }
+		else { cell = p2Fn( userlandBoard ) ; }
+		
+		this.play( cell ) ;
 	}
 
 	return this.winner ;
