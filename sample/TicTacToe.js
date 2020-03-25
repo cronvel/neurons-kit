@@ -35,7 +35,7 @@ const EventEmitter = require( 'events' ).EventEmitter ;
 
 function TicTacToe() {
 	this.board = new Array( 9 ).fill( 0 ) ;
-	this.turn = Math.random() < 0.5 ? -1 : 1 ;
+	this.sideToPlay = Math.random() < 0.5 ? -1 : 1 ;
 	this.end = false ;
 	this.winner = 0 ;
 	this.reason = null ;
@@ -53,18 +53,18 @@ TicTacToe.prototype.getBoard = function() { return [ ... this.board ] ; }
 
 
 // Player 1 is the positive one, and player 2 the negative one
-TicTacToe.prototype.run = function( p1Fn , p2Fn ) {
-	var cell ,
-		userlandBoard = new Array( 9 ) ;
+TicTacToe.prototype.run = async function( p1Fn , p2Fn ) {
+	var cell , userlandBoard ;
 
 	while ( ! this.end ) {
-		userlandBoard.length = 0 ;
-		userlandBoard.push( ... this.board ) ;
-
 		this.emit( 'position' ) ;
 
-		if ( this.turn > 0 ) { cell = p1Fn( userlandBoard ) ; }
-		else { cell = p2Fn( userlandBoard ) ; }
+		if ( this.sideToPlay > 0 ) {
+			cell = await p1Fn( this.board.map( cell => cell * this.sideToPlay ) ) ;
+		}
+		else {
+			cell = await p2Fn( this.board.map( cell => cell * this.sideToPlay ) ) ;
+		}
 		
 		this.play( cell ) ;
 	}
@@ -76,11 +76,15 @@ TicTacToe.prototype.run = function( p1Fn , p2Fn ) {
 
 TicTacToe.prototype.play = function( cell ) {
 	// Forbidden move = instant lose
-	if ( cell < 0 || cell >= 9 || this.board[ cell ] ) { return this.setLoser() ; }
-	this.board[ cell ] = this.turn ;
+	if ( cell < 0 || cell >= 9 || this.board[ cell ] ) {
+		console.log( "forbidden move:" , cell ) ;
+		return this.setLoser() ;
+	}
 
-	// Switch turn
-	if ( ! this.checkEnd() ) { this.turn *= -1 ; }
+	this.board[ cell ] = this.sideToPlay ;
+
+	// Switch sideToPlay
+	if ( ! this.checkEnd() ) { this.sideToPlay *= -1 ; }
 } ;
 
 
@@ -90,17 +94,17 @@ TicTacToe.prototype.checkEnd = function() {
 
 	// Check rows
 	for ( i = 0 ; i < 9 ; i += 3 ) {
-		if ( this.board[ i ] === this.board[ i + 1 ] === this.board[ i + 2 ] === this.turn ) { return this.setWinner() ; }
+		if ( this.board[ i ] === this.board[ i + 1 ] === this.board[ i + 2 ] === this.sideToPlay ) { return this.setWinner() ; }
 	}
 
 	// Check columns
 	for ( i = 0 ; i < 3 ; i ++ ) {
-		if ( this.board[ i ] === this.board[ i + 3 ] === this.board[ i + 6 ] === this.turn ) { return this.setWinner() ; }
+		if ( this.board[ i ] === this.board[ i + 3 ] === this.board[ i + 6 ] === this.sideToPlay ) { return this.setWinner() ; }
 	}
 
 	// Check diagonal
-	if ( this.board[ 0 ] === this.board[ 4 ] === this.board[ 8 ] === this.turn ) { return this.setWinner() ; }
-	if ( this.board[ 2 ] === this.board[ 4 ] === this.board[ 6 ] === this.turn ) { return this.setWinner() ; }
+	if ( this.board[ 0 ] === this.board[ 4 ] === this.board[ 8 ] === this.sideToPlay ) { return this.setWinner() ; }
+	if ( this.board[ 2 ] === this.board[ 4 ] === this.board[ 6 ] === this.sideToPlay ) { return this.setWinner() ; }
 
 	if ( this.board.every( cell => cell !== 0 ) ) { return this.setDraw() ; }
 
@@ -110,7 +114,7 @@ TicTacToe.prototype.checkEnd = function() {
 
 
 TicTacToe.prototype.setWinner = function() {
-	this.winner = this.turn ;
+	this.winner = this.sideToPlay ;
 	this.end = true ;
 	this.reason = 'win' ;
 	this.emit( 'end' , this.reason , this.winner ) ;
@@ -120,7 +124,7 @@ TicTacToe.prototype.setWinner = function() {
 
 
 TicTacToe.prototype.setLoser = function() {
-	this.winner = -1 * this.turn ;
+	this.winner = -1 * this.sideToPlay ;
 	this.end = true ;
 	this.reason = 'forbiddenMove' ;
 	this.emit( 'end' , this.reason , this.winner ) ;

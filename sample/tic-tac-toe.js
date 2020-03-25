@@ -53,8 +53,15 @@ var mutation = new nk.Mutation( {
 
 var createNetworkFn = () => {
 	var network = new nk.Network() ;
+	
+	// Split input, to ease evolution, otherwise the network would have to create new units
+	// to re-create internally the "cell-is-empty" information to avoid illegal moves
+	var inputs = [] ;
+	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:self:' + index ) ) ;
+	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:other:' + index ) ) ;
+
 	network.setNetworkModel( {
-		inputs: arrayKit.range( 9 ).map( index => 'board:' + index ) ,
+		inputs ,
 		outputs: arrayKit.range( 9 ).map( index => 'board:' + index ) ,
 		outputActivation: 'sigmoid'
 	} ) ;
@@ -67,10 +74,16 @@ var createNetworkFn = () => {
 } ;
 
 var networkPlay = ( network , board ) => {
-	var cell , score ,
-		maxScore = - Infinity ,
-		outputs = network.process( board ) ;
-	
+	var cell , score , outputs ,
+		inputs = [] ,
+		maxScore = - Infinity ;
+
+	// Split input, see above...
+	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
+	inputs.push( ... board.map( cell_ => cell_ < 0 ? 1 : 0 ) ) ;
+
+	outputs = network.process( inputs ) ;
+
 	outputs.forEach( ( output , index ) => {
 		var score = output + 0.5 * Math.random() ;
 		if ( score > maxScore ) { maxScore = score ; cell = index ; }
@@ -79,10 +92,10 @@ var networkPlay = ( network , board ) => {
 	return cell ;
 } ;
 
-var testFn = networks => {
+var testFn = async ( networks ) => {
 	var game = new TicTacToe() ;
 	
-	var winner = game.run(
+	var winner = await game.run(
 		board => networkPlay( networks[ 0 ] , board ) ,
 		board => networkPlay( networks[ 1 ] , board )
 	) ;
