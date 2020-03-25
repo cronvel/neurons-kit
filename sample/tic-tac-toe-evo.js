@@ -30,9 +30,16 @@
 
 
 const nk = require( '..' ) ;
+const TicTacToe = require( './TicTacToe.js' ) ;
+
 const arrayKit = require( 'array-kit' ) ;
 
-const TicTacToe = require( './TicTacToe.js' ) ;
+const termkit = require( 'terminal-kit' ) ;
+const term = termkit.terminal ;
+
+
+
+var rounds = parseInt( process.argv[ 2 ] , 10 ) || 1 ;
 
 
 
@@ -42,8 +49,8 @@ var mutation = new nk.Mutation( {
 	newUnitChance: 0.03 ,
 	removeUnitChance: 0.01 ,
 	mutateActivationChance: 0.02 ,
-	biasDelta: 0.25 ,
-	weightDelta: 0.25 ,
+	biasDelta: 0.5 ,
+	weightDelta: 0.5 ,
 	newConnectionWeight: 0.1 ,
 	newUnitBias: 0.1 ,
 	removeConnectionThreshold: 0.25 ,
@@ -67,7 +74,7 @@ var createNetworkFn = () => {
 	} ) ;
 
 	network.init() ;
-	network.mutateAddConnection( mutation ) ;
+	network.mutateAddNewConnection( mutation ) ;
 	network.randomize() ;
 	
 	return network ;
@@ -100,7 +107,8 @@ var testFn = async ( networks ) => {
 		board => networkPlay( networks[ 1 ] , board )
 	) ;
 	
-	console.log( game.reason + '\n' + game.boardStr() ) ;
+	//console.log( game.reason + '\n' + game.boardStr() ) ;
+	console.log( game.reason ) ;
 	
 	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
 } ;
@@ -108,13 +116,26 @@ var testFn = async ( networks ) => {
 var evolution = new nk.Evolution( {
 	createNetworkFn , testFn , mutation ,
 	versus: 1 ,
-	testCount: 5 ,
+	testCount: 20 ,
 	selectionRate: 0.15
 } ) ;
 
 async function run() {
+	try {
+		await evolution.loadPopulation( 'tic-tac-toe.evopop.json' ) ;
+		term( "Loaded an existing population.\n" ) ;
+	}
+	catch ( error ) {
+		term( "Starting a new population. (%s)\n" , error ) ;
+	}
+	
 	await evolution.init() ;
-	await evolution.runNextGeneration() ;
+	
+	while ( rounds -- ) {
+		await evolution.runNextGeneration() ;
+	}
+
+	await evolution.savePopulation( 'tic-tac-toe.evopop.json' ) ;
 }
 
 run() ;

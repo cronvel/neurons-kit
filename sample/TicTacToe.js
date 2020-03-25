@@ -77,7 +77,7 @@ TicTacToe.prototype.run = async function( p1Fn , p2Fn ) {
 TicTacToe.prototype.play = function( cell ) {
 	// Forbidden move = instant lose
 	if ( cell < 0 || cell >= 9 || this.board[ cell ] ) {
-		console.log( "forbidden move:" , cell ) ;
+		//console.log( "forbidden move:" , cell ) ;
 		return this.setLoser() ;
 	}
 

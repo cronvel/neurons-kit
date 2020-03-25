@@ -666,7 +666,7 @@ describe( "Mutations" , () => {
 		//log.hdebug( "Network: %[6]Y" , network ) ;
 		
 		var mutation = new nk.Mutation() ;
-		network.mutateAddConnection( mutation ) ;
+		network.mutateAddNewConnection( mutation ) ;
 		//log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
 		network.init() ;
 		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 1 ) ;
@@ -691,7 +691,7 @@ describe( "Mutations" , () => {
 		//log.hdebug( "Network: %[6]Y" , network ) ;
 		
 		var mutation = new nk.Mutation() ;
-		network.mutateAddUnit( mutation ) ;
+		network.mutateAddNewUnit( mutation ) ;
 		log.hdebug( "Network after mutation: %[6l50000]Y" , network ) ;
 		network.init() ;
 		expect( outputA.synapses.length + outputB.synapses.length ).to.be( 1 ) ;
