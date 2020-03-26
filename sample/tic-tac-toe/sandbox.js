@@ -34,6 +34,16 @@ const TicTacToe = require( './TicTacToe.js' ) ;
 
 
 
+/*
+	For instance, the lib doesn't support isomorphisms.
+	When it will, Tic Tac Toe has 7 isomorphic transformations:
+		* horizontal and vertical symmetry
+		* two diagonal symmetries
+		* clockwise and counter-clockwise rotations
+		* 180° rotation (or central symmetry)
+	It should apply to both input and output units.
+	Hidden unit connecting to any input or output with isomorphism are isomorphic too.
+*/
 exports.createNetwork = () => {
 	var network = new nk.Network() ;
 
@@ -89,6 +99,9 @@ exports.trial = async ( networks ) => {
 
 	//console.log( game.reason + '\n' + game.boardStr() ) ;
 	if ( exports.reason ) { console.log( game.reason ) ; }
+
+	// Active an harder penalty for losing because of an illegal move
+	if ( game.reason === 'forbiddenMove' ) { return winner > 0 ? [ 1 , -2 ] : [ -2 , 1 ] ; }
 
 	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
 } ;
