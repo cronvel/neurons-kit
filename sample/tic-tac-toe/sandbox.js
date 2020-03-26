@@ -89,7 +89,7 @@ exports.networkPlay = ( network , board ) => {
 
 
 
-exports.trial = async ( networks ) => {
+exports.trialVersus = async ( networks ) => {
 	var game = new TicTacToe() ;
 
 	var winner = await game.run(
