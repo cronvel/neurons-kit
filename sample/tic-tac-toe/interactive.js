@@ -49,11 +49,19 @@ var game = new TicTacToe() ;
 
 
 
+const AZERTY_GRID = 'azeqsdwxc' ;
+
 async function interactivePlay( playerName ) {
+	var cell , choice , indexOf ;
+
 	term( "\nBoard:\n%s" , game.boardStr() ) ;
 	term( "%s's turn: " , playerName ) ;
 
-	var cell = parseInt( await term.inputField().promise , 10 ) ;
+	choice = await term.inputField().promise ;
+	choice = choice[ 0 ] ;
+	
+	if ( ( indexOf = AZERTY_GRID.indexOf( choice ) ) !== -1 ) { cell = indexOf ; }
+	else { cell = parseInt( choice , 10 ) ; }
 
 	term( '\n' ) ;
 	return cell ;
