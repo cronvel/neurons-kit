@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
 	Neurons Kit
 
@@ -29,38 +28,15 @@
 
 
 
-const nk = require( '..' ) ;
+const nk = require( '../..' ) ;
+const arrayKit = require( 'array-kit' ) ;
 const TicTacToe = require( './TicTacToe.js' ) ;
 
-const arrayKit = require( 'array-kit' ) ;
-
-const termkit = require( 'terminal-kit' ) ;
-const term = termkit.terminal ;
 
 
-
-var rounds = parseInt( process.argv[ 2 ] , 10 ) || 1 ;
-
-
-
-var mutation = new nk.Mutation( {
-	newConnectionChance: 0.05 ,
-	removeConnectionChance: 0.02 ,
-	newUnitChance: 0.03 ,
-	removeUnitChance: 0.01 ,
-	mutateActivationChance: 0.02 ,
-	biasDelta: 0.5 ,
-	weightDelta: 0.5 ,
-	newConnectionWeight: 0.1 ,
-	newUnitBias: 0.1 ,
-	removeConnectionThreshold: 0.25 ,
-	removeUnitThreshold: 0.25 ,
-	activations: [ 'relu' , 'relu2' , 'sigmoid' , 'softPlus' ]
-} ) ;
-
-var createNetworkFn = () => {
+exports.createNetwork = () => {
 	var network = new nk.Network() ;
-	
+
 	// Split input, to ease evolution, otherwise the network would have to create new units
 	// to re-create internally the "cell-is-empty" information to avoid illegal moves
 	var inputs = [] ;
@@ -74,16 +50,18 @@ var createNetworkFn = () => {
 	} ) ;
 
 	network.init() ;
-	network.mutateAddNewConnection( mutation ) ;
+	network.mutateAddNewConnection( new nk.Mutation() ) ;
 	network.randomize() ;
-	
+
 	return network ;
 } ;
 
-var networkPlay = ( network , board ) => {
-	var cell , score , outputs ,
+
+
+exports.networkPlay = ( network , board ) => {
+	var cell , outputs ,
 		inputs = [] ,
-		maxScore = - Infinity ;
+		maxScore = -Infinity ;
 
 	// Split input, see above...
 	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
@@ -95,50 +73,23 @@ var networkPlay = ( network , board ) => {
 		var score = output + 0.5 * Math.random() ;
 		if ( score > maxScore ) { maxScore = score ; cell = index ; }
 	} ) ;
-	
+
 	return cell ;
 } ;
 
-var testFn = async ( networks ) => {
+
+
+exports.trial = async ( networks ) => {
 	var game = new TicTacToe() ;
-	
+
 	var winner = await game.run(
-		board => networkPlay( networks[ 0 ] , board ) ,
-		board => networkPlay( networks[ 1 ] , board )
+		board => exports.networkPlay( networks[ 0 ] , board ) ,
+		board => exports.networkPlay( networks[ 1 ] , board )
 	) ;
-	
+
 	//console.log( game.reason + '\n' + game.boardStr() ) ;
-	if ( process.argv[ 3 ] === 'r' ) { console.log( game.reason ) ; }
-	
+	if ( exports.reason ) { console.log( game.reason ) ; }
+
 	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
 } ;
-
-var evolution = new nk.Evolution( {
-	createNetworkFn , testFn , mutation ,
-	populationSize: 1000 ,
-	testCount: 100 ,
-	versus: 1 ,
-	selectionRate: 0.15
-} ) ;
-
-async function run() {
-	try {
-		await evolution.loadPopulation( 'tic-tac-toe.evopop.json' ) ;
-		term( "Loaded an existing population.\n" ) ;
-	}
-	catch ( error ) {
-		term( "Starting a new population. (%s)\n" , error ) ;
-	}
-	
-	await evolution.init() ;
-	
-	while ( rounds -- ) {
-		term( "Starting generation #%i (%i remaining round(s) to go)\n" , evolution.generation + 1 , rounds + 1 ) ;
-		await evolution.runNextGeneration() ;
-	}
-
-	await evolution.savePopulation( 'tic-tac-toe.evopop.json' ) ;
-}
-
-run() ;
 

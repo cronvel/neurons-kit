@@ -29,16 +29,25 @@
 
 
 
-const nk = require( '..' ) ;
+const nk = require( '../..' ) ;
 const arrayKit = require( 'array-kit' ) ;
 const termkit = require( 'terminal-kit' ) ;
 const term = termkit.terminal ;
 
+const fs = require( 'fs' ) ;
+
 const TicTacToe = require( './TicTacToe.js' ) ;
+const sandbox = require( './sandbox.js' ) ;
 
 
+
+term.on( 'key' , key => {
+	if ( key === 'CTRL_C' ) { process.exit() ; }
+} ) ;
 
 var game = new TicTacToe() ;
+
+
 
 async function interactivePlay( playerName ) {
 	term( "\nBoard:\n%s" , game.boardStr() ) ;
@@ -50,7 +59,9 @@ async function interactivePlay( playerName ) {
 	return cell ;
 }
 
-async function run() {
+
+
+async function runPvP() {
 	var p1 = 'Player 1' ,
 		p2 = 'Player 2' ;
 	
@@ -71,9 +82,56 @@ async function run() {
 	process.exit() ;
 }
 
-term.on( 'key' , key => {
-	if ( key === 'CTRL_C' ) { process.exit() ; }
-} ) ;
 
-run() ;
+
+async function runPvAi( filePath , index = 0 ) {
+	var p1 = 'Player' ,
+		p2 = 'Computer' ;
+	
+	var data = JSON.parse( await fs.promises.readFile( filePath , 'utf8' ) ) ;
+	
+	if ( data.population ) {
+		// This not a brain, this is a population, so get one individual
+		index = Math.min( index , data.population.length - 1 ) ;
+		data = data.population[ index ] ;
+		p2 += ' #' + ( index + 1 ) ;
+	}
+	
+	if ( data.metadata.generation ) {
+		p2 += ' Gen. ' + data.metadata.generation ;
+	}
+	
+	var network = nk.Network.import( data ) ;
+	
+	await game.run(
+		() => interactivePlay( p1 ) ,
+		board => {
+			term( "\nBoard:\n%s" , game.boardStr() ) ;
+			term( "%s's turn: " , p2 ) ;
+			var cell = sandbox.networkPlay( network , board ) ;
+			term( '%i\n' , cell ) ;
+			return cell ;
+		}
+	) ;
+
+	term( "\nBoard:\n%s" , game.boardStr() ) ;
+	
+	if ( game.winner ) {
+		term( "\n^C%s^ ^Ywin!^ ^-%s^:\n" , game.winner > 0 ? p1 : p2 , game.reason !== "win" ? '(' + game.reason + ')' : '' ) ;
+	}
+	else {
+		term( "\n^YDraw!^:\n" ) ;
+	}
+	
+	process.exit() ;
+}
+
+
+
+if ( process.argv[ 2 ] ) {
+	runPvAi( process.argv[ 2 ] , parseInt( process.argv[ 3 ] , 10 ) || 0 ) ;
+}
+else {
+	runPvP() ;
+}
 
