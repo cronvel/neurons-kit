@@ -3,9 +3,10 @@ sandbox: @@sandbox.js
 
 evolution:
 	populationSize: 1000
-	trialVersusCount: 20
+	trialVersusCount: 100
 	versus: 1
-	selectionRate: 0.1
+	selectionRate: 0.3
+	eliteRate: 0.1
 
 mutations:
 	newConnectionChance: 0.2

@@ -153,7 +153,7 @@ TicTacToe.prototype.boardStr = function() {
 
 	// For each rows
 	for ( i = 0 ; i < 9 ; i += 3 ) {
-		str += '|' ;
+		str += column ;
 
 		for ( j = i ; j < i + 3 ; j ++ ) {
 			str += cells[ this.board[ j ] + 1 ] + column ;

@@ -30,7 +30,13 @@
 
 const nk = require( '../..' ) ;
 const arrayKit = require( 'array-kit' ) ;
+const string = require( 'string-kit' ) ;
 const TicTacToe = require( './TicTacToe.js' ) ;
+
+
+
+// Things to configure with --sanbox.* CLI options
+exports.reason = false ;
 
 
 
@@ -68,7 +74,9 @@ exports.createNetwork = () => {
 
 
 
-exports.networkPlay = ( network , board ) => {
+const DEFAULT_NETWORK_PLAY_OPTIONS = {} ;
+
+exports.networkPlay = ( network , board , options = DEFAULT_NETWORK_PLAY_OPTIONS ) => {
 	var cell , outputs ,
 		inputs = [] ,
 		maxScore = -Infinity ;
@@ -83,8 +91,34 @@ exports.networkPlay = ( network , board ) => {
 		var score = output + 0.5 * Math.random() ;
 		if ( score > maxScore ) { maxScore = score ; cell = index ; }
 	} ) ;
+	
+	if ( options.displayOutput ) {
+		console.log( boardOutput( outputs ) ) ;
+	}
 
 	return cell ;
+} ;
+
+
+
+function boardOutput( outputs ) {
+	var i , j ,
+		column = '|' ,
+		line = '+-----+-----+-----+\n' ,
+		str = line ;
+
+	// For each rows
+	for ( i = 0 ; i < 9 ; i += 3 ) {
+		str += column ;
+
+		for ( j = i ; j < i + 3 ; j ++ ) {
+			str += string.format( "%[.3!]f" , outputs[ j ] ) + column ;
+		}
+
+		str += '\n' + line ;
+	}
+
+	return str ;
 } ;
 
 
@@ -101,7 +135,7 @@ exports.trialVersus = async ( networks ) => {
 	if ( exports.reason ) { console.log( game.reason ) ; }
 
 	// Active an harder penalty for losing because of an illegal move
-	if ( game.reason === 'forbiddenMove' ) { return winner > 0 ? [ 1 , -2 ] : [ -2 , 1 ] ; }
+	if ( game.reason === 'forbiddenMove' ) { return winner > 0 ? [ 1 , -5 ] : [ -5 , 1 ] ; }
 
 	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
 } ;

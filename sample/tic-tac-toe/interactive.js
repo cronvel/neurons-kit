@@ -115,9 +115,9 @@ async function runPvAi( filePath , index = 0 ) {
 		() => interactivePlay( p1 ) ,
 		board => {
 			term( "\nBoard:\n%s" , game.boardStr() ) ;
-			term( "%s's turn: " , p2 ) ;
-			var cell = sandbox.networkPlay( network , board ) ;
-			term( '%i\n' , cell ) ;
+			term( "%s's turn: \n" , p2 ) ;
+			var cell = sandbox.networkPlay( network , board , { displayOutput: true } ) ;
+			term( 'Chosen: %i\n' , cell ) ;
 			return cell ;
 		}
 	) ;
