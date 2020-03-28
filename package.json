@@ -1,6 +1,6 @@
 {
   "name": "neurons-kit",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Work in progress...",
   "main": "lib/neuronsKit.js",
   "private": true,
