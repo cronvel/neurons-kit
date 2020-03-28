@@ -37,6 +37,10 @@ const TicTacToe = require( './TicTacToe.js' ) ;
 
 // Things to configure with --sanbox.* CLI options
 exports.reason = false ;
+exports.winnerScore = 1 ;
+exports.loserScore = -1 ;
+exports.drawScore = 0 ;
+exports.illegalMoveScore = -10 ;
 
 
 
@@ -101,6 +105,16 @@ exports.networkPlay = ( network , board , options = DEFAULT_NETWORK_PLAY_OPTIONS
 
 
 
+exports.randomPlay = board => {
+	var allowed = arrayKit.range( 9 ).filter( index => board[ index ] === 0 ) ;
+	var cell = allowed[ Math.floor( allowed.length * Math.random() ) ] ;
+	//console.log( board , allowed , cell ) ;
+
+	return cell ;
+} ;
+
+
+
 function boardOutput( outputs ) {
 	var i , j ,
 		column = '|' ,
@@ -119,7 +133,7 @@ function boardOutput( outputs ) {
 	}
 
 	return str ;
-} ;
+}
 
 
 
@@ -134,9 +148,37 @@ exports.trialVersus = async ( networks ) => {
 	//console.log( game.reason + '\n' + game.boardStr() ) ;
 	if ( exports.reason ) { console.log( game.reason ) ; }
 
-	// Active an harder penalty for losing because of an illegal move
-	if ( game.reason === 'forbiddenMove' ) { return winner > 0 ? [ 1 , -5 ] : [ -5 , 1 ] ; }
+	// Harder penalty for losing because of an illegal move
+	if ( game.reason === 'illegalMove' ) {
+		return winner > 0 ? [ exports.winnerScore , exports.illegalMoveScore ] :
+			[ exports.illegalMoveScore , exports.winnerScore ] ;
+	}
 
-	return winner ? [ winner , -winner ] : [ 0 , 0 ] ;
+	return winner > 0 ? [ exports.winnerScore , exports.loserScore ] :
+		winner < 0 ? [ exports.loserScore , exports.winnerScore ] :
+		[ exports.drawScore , exports.drawScore ] ;
+} ;
+
+
+
+exports.trial = async ( network ) => {
+	var game = new TicTacToe() ;
+
+	var winner = await game.run(
+		board => exports.networkPlay( network , board ) ,
+		board => exports.randomPlay( board )
+	) ;
+
+	//console.log( game.reason + '\n' + game.boardStr() ) ;
+	if ( exports.reason ) { console.log( game.reason ) ; }
+
+	// Harder penalty for losing because of an illegal move
+	if ( game.reason === 'illegalMove' ) {
+		return winner > 0 ? exports.winnerScore : exports.illegalMoveScore ;
+	}
+
+	return winner > 0 ? exports.winnerScore :
+		winner < 0 ? exports.loserScore :
+		exports.drawScore ;
 } ;
 

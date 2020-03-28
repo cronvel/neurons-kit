@@ -77,7 +77,7 @@ TicTacToe.prototype.run = async function( p1Fn , p2Fn ) {
 TicTacToe.prototype.play = function( cell ) {
 	// Forbidden move = instant lose
 	if ( cell < 0 || cell >= 9 || this.board[ cell ] ) {
-		//console.log( "forbidden move:" , cell ) ;
+		//console.log( "illegal move:" , cell ) ;
 		return this.setLoser() ;
 	}
 
@@ -127,7 +127,7 @@ TicTacToe.prototype.setWinner = function() {
 TicTacToe.prototype.setLoser = function() {
 	this.winner = -1 * this.sideToPlay ;
 	this.end = true ;
-	this.reason = 'forbiddenMove' ;
+	this.reason = 'illegalMove' ;
 	this.emit( 'end' , this.reason , this.winner ) ;
 	return true ;
 } ;
