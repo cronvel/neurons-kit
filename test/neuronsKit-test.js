@@ -618,9 +618,11 @@ describe( "Network creation" , () => {
 		] ) ;
 		
 		serialized = network.serialize( true ) ;
-		console.log( serialized ) ;
+		//console.log( serialized ) ;
 		unserialized = nk.Network.unserialize( serialized ) ;
 		expect( unserialized ).to.equal( network ) ;
+		//console.log( network ) ;
+		//console.log( network.clone() ) ;
 		expect( network.clone() ).to.equal( network ) ;
 		
 		serialized2 = unserialized.serialize( true ) ;
