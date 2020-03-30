@@ -29,7 +29,7 @@
 
 
 
-const nk = require( '../..' ) ;
+const nk = require( '../../..' ) ;
 const arrayKit = require( 'array-kit' ) ;
 const termkit = require( 'terminal-kit' ) ;
 const term = termkit.terminal ;

@@ -28,7 +28,7 @@
 
 
 
-const nk = require( '../..' ) ;
+const nk = require( '../../..' ) ;
 const arrayKit = require( 'array-kit' ) ;
 const string = require( 'string-kit' ) ;
 const TicTacToe = require( './TicTacToe.js' ) ;

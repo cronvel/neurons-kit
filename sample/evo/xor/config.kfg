@@ -1,0 +1,30 @@
+
+sandbox: @@sandbox.js
+
+evolution:
+	populationSize: 200
+	maxIslands: 20
+	islandTimeout: 200
+	islandSize: 200
+    mutationIslandChance: 0.01
+	trialCount: 1
+	selectionRate: 0.15
+	eliteRate: 0.05
+	unitPenalty: 0.1
+
+mutations:
+	count: 5
+	perUnitCount: 0.5
+	newConnectionChance: 0.2
+	removeConnectionChance: 0.02
+	newUnitChance: 0.05
+	removeUnitChance: 0.05
+	mutateActivationChance: 0
+	biasDelta: 0.5
+	weightDelta: 0.5
+	newConnectionWeight: 0.5
+	newUnitBias: 0.3
+	removeConnectionThreshold: 0.25
+	removeUnitThreshold: 0.5
+	activations:
+		- relu
