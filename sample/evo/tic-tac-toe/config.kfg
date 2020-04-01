@@ -1,25 +1,35 @@
 
+sandbox: @@sandbox.js
+
 evolution:
-	sandbox: @@sandbox.js
-	populationSize: 1000
-	trialCount: 100
+	populationSize: 300
+	maxIslands: 20
+	islandTimeout: 150
+	islandSize: 100
+	# Chance for only when (minor) mutation
+	mutationIslandChance: 0.001
+	crossOverIslandChance: 0.1
+	trialCount: 50
+	trialVersusCount: 0
 	versus: 1
 	selectionRate: 0.15
+	eliteRate: 0.05
+	crossOverChance: 0.1
+	unitPenalty: 0.25
 
 mutations:
-	newConnectionChance: 0.05
+	count: 10
+	perUnitCount: 0.5
+	newConnectionChance: 0.2
 	removeConnectionChance: 0.02
-	newUnitChance: 0.03
-	removeUnitChance: 0.01
-	mutateActivationChance: 0.02
+	newUnitChance: 0.05
+	removeUnitChance: 0.05
+	mutateActivationChance: 0
 	biasDelta: 0.5
 	weightDelta: 0.5
-	newConnectionWeight: 0.1
-	newUnitBias: 0.1
-	removeConnectionThreshold: 0.25
-	removeUnitThreshold: 0.25
+	newConnectionWeight: 0.5
+	newUnitBias: 0.3
+	removeConnectionThreshold: 0.5
+	removeUnitThreshold: 4
 	activations:
 		- relu
-		- relu2
-		- sigmoid
-		- softPlus
