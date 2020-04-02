@@ -9,8 +9,8 @@ evolution:
 	# Chance for only when (minor) mutation
 	mutationIslandChance: 0.001
 	crossOverIslandChance: 0.1
-	trialCount: 30
-	trialVersusCount: 0
+	trialCount: 50
+	trialVersusCount: 50
 	versus: 1
 	selectionRate: 0.15
 	eliteRate: 0.05
