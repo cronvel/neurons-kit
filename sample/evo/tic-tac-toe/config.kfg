@@ -5,17 +5,17 @@ evolution:
 	populationSize: 300
 	maxIslands: 20
 	islandTimeout: 150
-	islandSize: 100
+	islandSize: 50
 	# Chance for only when (minor) mutation
 	mutationIslandChance: 0.001
 	crossOverIslandChance: 0.1
-	trialCount: 50
+	trialCount: 30
 	trialVersusCount: 0
 	versus: 1
 	selectionRate: 0.15
 	eliteRate: 0.05
 	crossOverChance: 0.1
-	unitPenalty: 0.25
+	unitPenalty: 0.005
 
 mutations:
 	count: 10
@@ -31,5 +31,6 @@ mutations:
 	newUnitBias: 0.3
 	removeConnectionThreshold: 0.5
 	removeUnitThreshold: 4
+	abortedRemoveCutRate: 0.25
 	activations:
 		- relu
