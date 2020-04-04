@@ -137,48 +137,89 @@ function boardOutput( outputs ) {
 
 
 
-exports.trialVersus = async ( networks ) => {
-	var game = new TicTacToe() ;
+exports.trialVersus = async ( networks , orderMatters ) => {
+	var game = new TicTacToe( ! orderMatters ) ;
 
 	var winner = await game.run(
 		board => exports.networkPlay( networks[ 0 ] , board ) ,
 		board => exports.networkPlay( networks[ 1 ] , board )
 	) ;
 
+	if ( ! networks[ 0 ].metadata.trialData ) { networks[ 0 ].metadata.trialData = {} ; }
+	if ( ! networks[ 1 ].metadata.trialData ) { networks[ 1 ].metadata.trialData = {} ; }
+	
 	//console.log( game.reason + '\n' + game.boardStr() ) ;
 	if ( exports.reason ) { console.log( game.reason ) ; }
 
 	// Harder penalty for losing because of an illegal move
 	if ( game.reason === 'illegalMove' ) {
-		return winner > 0 ? [ exports.winnerScore , exports.illegalMoveScore ] :
-			[ exports.illegalMoveScore , exports.winnerScore ] ;
+		if ( winner > 0 ) {
+			networks[ 0 ].metadata.trialData.illWin = ( networks[ 0 ].metadata.trialData.illWin || 0 ) + 1 ;
+			networks[ 1 ].metadata.trialData.illLose = ( networks[ 1 ].metadata.trialData.illLose || 0 ) + 1 ;
+			return [ exports.winnerScore , exports.illegalMoveScore ] ;
+		}
+		else {
+			networks[ 0 ].metadata.trialData.illLose = ( networks[ 0 ].metadata.trialData.illLose || 0 ) + 1 ;
+			networks[ 1 ].metadata.trialData.illWin = ( networks[ 1 ].metadata.trialData.illWin || 0 ) + 1 ;
+			return [ exports.illegalMoveScore , exports.winnerScore ] ;
+		}
 	}
 
-	return winner > 0 ? [ exports.winnerScore , exports.loserScore ] :
-		winner < 0 ? [ exports.loserScore , exports.winnerScore ] :
-		[ exports.drawScore , exports.drawScore ] ;
+	if ( winner > 0 ) {
+		networks[ 0 ].metadata.trialData.win = ( networks[ 0 ].metadata.trialData.win || 0 ) + 1 ;
+		networks[ 1 ].metadata.trialData.lose = ( networks[ 1 ].metadata.trialData.lose || 0 ) + 1 ;
+		return [ exports.winnerScore , exports.loserScore ] ;
+	}
+	else if ( winner < 0 ) {
+		networks[ 0 ].metadata.trialData.lose = ( networks[ 0 ].metadata.trialData.lose || 0 ) + 1 ;
+		networks[ 1 ].metadata.trialData.win = ( networks[ 1 ].metadata.trialData.win || 0 ) + 1 ;
+		return [ exports.loserScore , exports.winnerScore ] ;
+	}
+	else {
+		networks[ 0 ].metadata.trialData.draw = ( networks[ 0 ].metadata.trialData.draw || 0 ) + 1 ;
+		networks[ 1 ].metadata.trialData.draw = ( networks[ 1 ].metadata.trialData.draw || 0 ) + 1 ;
+		return [ exports.drawScore , exports.drawScore ] ;
+	}
 } ;
 
 
 
-exports.trial = async ( network ) => {
-	var game = new TicTacToe() ;
+exports.trial = async ( network , orderMatters ) => {
+	var game = new TicTacToe( ! orderMatters ) ;
 
 	var winner = await game.run(
 		board => exports.networkPlay( network , board ) ,
 		board => exports.randomPlay( board )
 	) ;
 
+	if ( ! network.metadata.trialData ) { network.metadata.trialData = {} ; }
+
 	//console.log( game.reason + '\n' + game.boardStr() ) ;
 	if ( exports.reason ) { console.log( game.reason ) ; }
 
 	// Harder penalty for losing because of an illegal move
 	if ( game.reason === 'illegalMove' ) {
-		return winner > 0 ? exports.winnerScore : exports.illegalMoveScore ;
+		if ( winner > 0 ) {
+			network.metadata.trialData.illWin = ( network.metadata.trialData.illWin || 0 ) + 1 ;
+			return exports.winnerScore ;
+		}
+		else {
+			network.metadata.trialData.illLose = ( network.metadata.trialData.illLose || 0 ) + 1 ;
+			return exports.illegalMoveScore ;
+		}
 	}
 
-	return winner > 0 ? exports.winnerScore :
-		winner < 0 ? exports.loserScore :
-		exports.drawScore ;
+	if ( winner > 0 ) {
+		network.metadata.trialData.win = ( network.metadata.trialData.win || 0 ) + 1 ;
+		return exports.winnerScore ;
+	}
+	else if ( winner < 0 ) {
+		network.metadata.trialData.lose = ( network.metadata.trialData.lose || 0 ) + 1 ;
+		return exports.loserScore ;
+	}
+	else {
+		network.metadata.trialData.draw = ( network.metadata.trialData.draw || 0 ) + 1 ;
+		return exports.drawScore ;
+	}
 } ;
 

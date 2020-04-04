@@ -33,9 +33,12 @@ const EventEmitter = require( 'events' ).EventEmitter ;
 
 
 
-function TicTacToe() {
+function TicTacToe( randomStart = true ) {
 	this.board = new Array( 9 ).fill( 0 ) ;
-	this.sideToPlay = Math.random() < 0.5 ? -1 : 1 ;
+	this.sideToPlay =
+		! randomStart ? 1 :
+		Math.random() < 0.5 ? -1 :
+		1 ;
 	this.end = false ;
 	this.winner = 0 ;
 	this.reason = null ;
