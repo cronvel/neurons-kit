@@ -32,7 +32,7 @@
 				{
 					"id": "o:board:0",
 					"a": "hardSigmoid",
-					"b": 0.5,
+					"b": 0,
 					"s": [
 						{
 							"i": "i:board:self:0",
@@ -47,7 +47,7 @@
 				{
 					"id": "o:board:1",
 					"a": "hardSigmoid",
-					"b": 0,
+					"b": -0.5,
 					"s": [
 						{
 							"i": "i:board:self:1",
@@ -62,7 +62,7 @@
 				{
 					"id": "o:board:2",
 					"a": "hardSigmoid",
-					"b": 0.5,
+					"b": 0,
 					"s": [
 						{
 							"i": "i:board:self:2",
@@ -77,7 +77,7 @@
 				{
 					"id": "o:board:3",
 					"a": "hardSigmoid",
-					"b": 0,
+					"b": -0.5,
 					"s": [
 						{
 							"i": "i:board:self:3",
@@ -92,7 +92,7 @@
 				{
 					"id": "o:board:4",
 					"a": "hardSigmoid",
-					"b": 1,
+					"b": 0.5,
 					"s": [
 						{
 							"i": "i:board:self:4",
@@ -107,7 +107,7 @@
 				{
 					"id": "o:board:5",
 					"a": "hardSigmoid",
-					"b": 0,
+					"b": -0.5,
 					"s": [
 						{
 							"i": "i:board:self:5",
@@ -122,7 +122,7 @@
 				{
 					"id": "o:board:6",
 					"a": "hardSigmoid",
-					"b": 0.5,
+					"b": 0,
 					"s": [
 						{
 							"i": "i:board:self:6",
@@ -137,7 +137,7 @@
 				{
 					"id": "o:board:7",
 					"a": "hardSigmoid",
-					"b": 0,
+					"b": -0.5,
 					"s": [
 						{
 							"i": "i:board:self:7",
@@ -152,7 +152,7 @@
 				{
 					"id": "o:board:8",
 					"a": "hardSigmoid",
-					"b": 0.5,
+					"b": 0,
 					"s": [
 						{
 							"i": "i:board:self:8",
