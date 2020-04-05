@@ -30,10 +30,132 @@
 			],
 			"units": [
 				{
+					"id": "h:row:other:0",
+					"a": "hardSigmoid",
+					"b": -12,
+					"s": [
+						{
+							"i": "i:board:other:0",
+							"w": 8
+						},
+						{
+							"i": "i:board:other:1",
+							"w": 8
+						},
+						{
+							"i": "i:board:other:2",
+							"w": 8
+						}
+                    ]
+				},
+				{
+					"id": "h:row:other:1",
+					"a": "hardSigmoid",
+					"b": -12,
+					"s": [
+						{
+							"i": "i:board:other:3",
+							"w": 8
+						},
+						{
+							"i": "i:board:other:4",
+							"w": 8
+						},
+						{
+							"i": "i:board:other:5",
+							"w": 8
+						}
+                    ]
+				},
+				{
+					"id": "h:row:other:2",
+					"a": "hardSigmoid",
+					"b": -12,
+					"s": [
+						{
+							"i": "i:board:other:6",
+							"w": 8
+						},
+						{
+							"i": "i:board:other:7",
+							"w": 8
+						},
+						{
+							"i": "i:board:other:8",
+							"w": 8
+						}
+                    ]
+				},
+				{
+					"id": "h:row:self:0",
+					"a": "hardSigmoid",
+					"b": -1,
+					"s": [
+						{
+							"i": "i:board:self:0",
+							"w": 1
+						},
+						{
+							"i": "i:board:self:1",
+							"w": 1
+						},
+						{
+							"i": "i:board:self:2",
+							"w": 1
+						}
+                    ]
+				},
+				{
+					"id": "h:row:self:1",
+					"a": "hardSigmoid",
+					"b": -1,
+					"s": [
+						{
+							"i": "i:board:self:3",
+							"w": 1
+						},
+						{
+							"i": "i:board:self:4",
+							"w": 1
+						},
+						{
+							"i": "i:board:self:5",
+							"w": 1
+						}
+                    ]
+				},
+				{
+					"id": "h:row:self:2",
+					"a": "hardSigmoid",
+					"b": -1,
+					"s": [
+						{
+							"i": "i:board:self:6",
+							"w": 1
+						},
+						{
+							"i": "i:board:self:7",
+							"w": 1
+						},
+						{
+							"i": "i:board:self:8",
+							"w": 1
+						}
+                    ]
+				},
+				{
 					"id": "o:board:0",
 					"a": "hardSigmoid",
 					"b": 0,
 					"s": [
+						{
+							"i": "h:row:self:0",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:0",
+							"w": 1
+						},
 						{
 							"i": "i:board:self:0",
 							"w": -10
@@ -50,6 +172,14 @@
 					"b": -0.5,
 					"s": [
 						{
+							"i": "h:row:self:0",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:0",
+							"w": 1
+						},
+						{
 							"i": "i:board:self:1",
 							"w": -10
 						},
@@ -64,6 +194,14 @@
 					"a": "hardSigmoid",
 					"b": 0,
 					"s": [
+						{
+							"i": "h:row:self:0",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:0",
+							"w": 1
+						},
 						{
 							"i": "i:board:self:2",
 							"w": -10
@@ -80,6 +218,14 @@
 					"b": -0.5,
 					"s": [
 						{
+							"i": "h:row:self:1",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:1",
+							"w": 1
+						},
+						{
 							"i": "i:board:self:3",
 							"w": -10
 						},
@@ -94,6 +240,14 @@
 					"a": "hardSigmoid",
 					"b": 0.5,
 					"s": [
+						{
+							"i": "h:row:self:1",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:1",
+							"w": 1
+						},
 						{
 							"i": "i:board:self:4",
 							"w": -10
@@ -110,6 +264,14 @@
 					"b": -0.5,
 					"s": [
 						{
+							"i": "h:row:self:1",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:1",
+							"w": 1
+						},
+						{
 							"i": "i:board:self:5",
 							"w": -10
 						},
@@ -124,6 +286,14 @@
 					"a": "hardSigmoid",
 					"b": 0,
 					"s": [
+						{
+							"i": "h:row:self:2",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:2",
+							"w": 1
+						},
 						{
 							"i": "i:board:self:6",
 							"w": -10
@@ -140,6 +310,14 @@
 					"b": -0.5,
 					"s": [
 						{
+							"i": "h:row:self:2",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:2",
+							"w": 1
+						},
+						{
 							"i": "i:board:self:7",
 							"w": -10
 						},
@@ -154,6 +332,14 @@
 					"a": "hardSigmoid",
 					"b": 0,
 					"s": [
+						{
+							"i": "h:row:self:2",
+							"w": 2
+						},
+						{
+							"i": "h:row:other:2",
+							"w": 1
+						},
 						{
 							"i": "i:board:self:8",
 							"w": -10
