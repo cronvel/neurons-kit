@@ -3,7 +3,7 @@ sandbox: @@sandbox.js
 
 evolution:
 	populationSize: 300
-	maxIslands: 20
+	maxIslands: 25
 	islandTimeout: 150
 	islandSize: 50
 	# Chance for only when (minor) mutation
@@ -17,7 +17,7 @@ evolution:
 	selectionRate: 0.15
 	eliteRate: 0.05
 	crossOverChance: 0.1
-	unitPenalty: 0.003
+	unitPenalty: 0.001
 
 mutations:
 	count: 10
@@ -35,4 +35,4 @@ mutations:
 	removeUnitThreshold: 4
 	abortedRemoveCutRate: 0.25
 	activations:
-		- relu
+		- hardSigmoid

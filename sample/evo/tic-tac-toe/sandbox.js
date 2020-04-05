@@ -66,7 +66,8 @@ exports.createNetwork = () => {
 	network.setNetworkModel( {
 		inputs ,
 		outputs: arrayKit.range( 9 ).map( index => 'board:' + index ) ,
-		outputActivation: 'sigmoid'
+		unconnected: true ,
+		outputActivation: 'hardSigmoid'
 	} ) ;
 
 	network.init() ;

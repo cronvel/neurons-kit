@@ -40,9 +40,11 @@ exports.createNetwork = () => {
 	network.setNetworkModel( {
 		inputs: [ 'a' , 'b' ] ,
 		outputs: [ 'r' ] ,
-		outputActivation: 'sigmoid'
+		unconnected: true ,
+		outputActivation: 'hardSigmoid'
 	} ) ;
 
+	network.mutateAddNewConnection( new nk.Mutation() ) ;
 	network.init() ;
 	network.randomize() ;
 
