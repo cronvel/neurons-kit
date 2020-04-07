@@ -2,12 +2,14 @@
 sandbox: @@sandbox.js
 
 evolution:
-	populationSize: 300
-	maxIslands: 25
+	populationSize: 150
+	startingIslands: 20
+	maxIslands: 40
 	islandTimeout: 150
 	islandSize: 50
-	# Chance for only when (minor) mutation
+	# Chance for a minor mutation to be protected inside a new island
 	mutationIslandChance: 0.001
+	# Chance for a cross-over to be protected inside a new island
 	crossOverIslandChance: 0.1
 	#trialCount: 50
 	#trialVersusCount: 50
