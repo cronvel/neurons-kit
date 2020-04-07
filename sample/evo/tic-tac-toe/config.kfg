@@ -11,11 +11,12 @@ evolution:
 	mutationIslandChance: 0.001
 	# Chance for a cross-over to be protected inside a new island
 	crossOverIslandChance: 0.1
-	#trialCount: 50
+	trialCount: 50
+	trialVersusCount: 0
 	#trialVersusCount: 50
-	versusAll: yes
-	unorderedVersus: no
-	versus: 1
+	#versusAll: yes
+	#unorderedVersus: no
+	#versus: 1
 	selectionRate: 0.15
 	eliteRate: 0.05
 	crossOverChance: 0.1
@@ -24,6 +25,9 @@ evolution:
 mutations:
 	count: 10
 	perUnitCount: 0.5
+	momentumCount: 2
+	momentumChance: 0.1
+	#momentumInBetweenChance: 0.02
 	newConnectionChance: 0.2
 	removeConnectionChance: 0.02
 	newUnitChance: 0.05
