@@ -77,6 +77,28 @@ TicTacToe.prototype.run = async function( p1Fn , p2Fn ) {
 
 
 
+// Sync variant, for faster run
+TicTacToe.prototype.runSync = function( p1Fn , p2Fn ) {
+	var cell , userlandBoard ;
+
+	while ( ! this.end ) {
+		this.emit( 'position' ) ;
+
+		if ( this.sideToPlay > 0 ) {
+			cell = p1Fn( this.board.map( cell => cell * this.sideToPlay ) ) ;
+		}
+		else {
+			cell = p2Fn( this.board.map( cell => cell * this.sideToPlay ) ) ;
+		}
+		
+		this.play( cell ) ;
+	}
+
+	return this.winner ;
+} ;
+
+
+
 TicTacToe.prototype.play = function( cell ) {
 	// Forbidden move = instant lose
 	if ( cell < 0 || cell >= 9 || this.board[ cell ] ) {

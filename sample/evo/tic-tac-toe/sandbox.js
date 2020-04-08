@@ -138,10 +138,10 @@ function boardOutput( outputs ) {
 
 
 
-exports.trialVersus = async ( networks , orderMatters ) => {
+exports.trialVersus = ( networks , orderMatters ) => {
 	var game = new TicTacToe( ! orderMatters ) ;
 
-	var winner = await game.run(
+	var winner = game.runSync(
 		board => exports.networkPlay( networks[ 0 ] , board ) ,
 		board => exports.networkPlay( networks[ 1 ] , board )
 	) ;
@@ -185,10 +185,10 @@ exports.trialVersus = async ( networks , orderMatters ) => {
 
 
 
-exports.trial = async ( network , orderMatters ) => {
+exports.trial = ( network , orderMatters ) => {
 	var game = new TicTacToe( ! orderMatters ) ;
 
-	var winner = await game.run(
+	var winner = game.runSync(
 		board => exports.networkPlay( network , board ) ,
 		board => exports.randomPlay( board )
 	) ;
