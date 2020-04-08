@@ -2,7 +2,7 @@
 sandbox: @@sandbox.js
 
 evolution:
-	populationSize: 150
+	populationSize: 250
 	startingIslands: 20
 	maxIslands: 40
 	islandTimeout: 150
@@ -11,7 +11,8 @@ evolution:
 	mutationIslandChance: 0.001
 	# Chance for a cross-over to be protected inside a new island
 	crossOverIslandChance: 0.1
-	trialCount: 50
+	#trialCount: 0
+	trialCount: 100
 	trialVersusCount: 0
 	#trialVersusCount: 50
 	#versusAll: yes
@@ -20,6 +21,7 @@ evolution:
 	selectionRate: 0.15
 	eliteRate: 0.05
 	crossOverChance: 0.1
+	crossOverCompatibility: 0.5
 	unitPenalty: 0.001
 
 mutations:
@@ -35,6 +37,7 @@ mutations:
 	mutateActivationChance: 0
 	biasDelta: 0.5
 	weightDelta: 0.5
+	deltaBurst: yes
 	newConnectionWeight: 0.5
 	newUnitBias: 0.3
 	removeConnectionThreshold: 0.5
