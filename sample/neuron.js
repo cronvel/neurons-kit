@@ -29,10 +29,10 @@
 
 
 
-var nk = require( '..' ) ;
+const nk = require( '..' ) ;
 
 
-var neuron = new nk.Neuron( { transfer: nk.transferFunctions.leakyRelu } ) ;
+var neuron = new nk.Neuron( { transfer: 'leakyRelu' } ) ;
 
 var input1 = new nk.SignalEmitter() ,
 	input2 = new nk.SignalEmitter() ;

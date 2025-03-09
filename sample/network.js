@@ -29,30 +29,30 @@
 
 
 
-var nk = require( '..' ) ;
+const nk = require( '..' ) ;
 
 
 
 var network = new nk.Network() ,
 	inputA = new nk.SignalEmitter() ,
 	inputB = new nk.SignalEmitter() ,
-	outputA = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ,
-	outputB = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ;
+	outputA = new nk.Neuron( { activation: nk.aFn.sigmoid.hard } ) ,
+	outputB = new nk.Neuron( { activation: nk.aFn.sigmoid.hard } ) ;
 
-var	hidden11 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ,
-	hidden12 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ;
+var	hidden11 = new nk.Neuron( { activation: 'step' } ) ,
+	hidden12 = new nk.Neuron( { activation: 'step' } ) ;
 
-var	hidden21 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ,
-	hidden22 = new nk.Neuron( { transfer: 'step' , threshold: 0 } ) ;
+var	hidden21 = new nk.Neuron( { activation: 'step' } ) ,
+	hidden22 = new nk.Neuron( { activation: 'step' } ) ;
 
 network.addInput( inputA , 'a' ) ;
 network.addInput( inputB , 'b' ) ;
-network.addOutput( outputA , 'outputA' , outputA ) ;
-network.addOutput( outputB , 'outputB' , outputB ) ;
-network.addHidden( hidden21 ) ;
-network.addHidden( hidden22 ) ;
-network.addHidden( hidden11 ) ;
-network.addHidden( hidden12 ) ;
+network.addOutputUnit( outputA , 'outputA' ) ;
+network.addOutputUnit( outputB , 'outputB' ) ;
+network.addHiddenUnit( hidden21 ) ;
+network.addHiddenUnit( hidden22 ) ;
+network.addHiddenUnit( hidden11 ) ;
+network.addHiddenUnit( hidden12 ) ;
 
 hidden11.addInput( inputA , 1 ) ;
 hidden11.addInput( inputB , 1 ) ;
@@ -69,7 +69,8 @@ outputA.addInput( hidden22 , 1 ) ;
 outputB.addInput( hidden21 , 1 ) ;
 outputB.addInput( hidden22 , 1 ) ;
 
-network.computeUnitOrder() ;
+network.init() ;
+network.randomize() ;
 
 console.log( network.orderedUnits.indexOf( hidden11 ) ) ;
 console.log( network.orderedUnits.indexOf( hidden12 ) ) ;
@@ -78,15 +79,14 @@ console.log( network.orderedUnits.indexOf( hidden22 ) ) ;
 console.log( network.orderedUnits.indexOf( outputA ) ) ;
 console.log( network.orderedUnits.indexOf( outputB ) ) ;
 
-/*
-network.setInputSignals( {
-	a: 0 ,
+network.setNamedInputs( {
+	a: 10 ,
 	b: 0
 } ) ;
 
-//console.log( '>>>>>' , network.inputs ) ;
+//console.log( '>>>>>' , network ) ;
+network.forwardSignal() ;
 
-console.log( '\nOutput: ' , network.getOutputSignal( 'output' ) ) ;
-*/
+console.log( '\nOutput: ' , network.getOutputs() ) ;
 
 

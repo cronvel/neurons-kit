@@ -40,5 +40,8 @@
       2020
     ],
     "owner": "Cédric Ronvel"
+  },
+  "engines": {
+    "node": ">=16.13.0"
   }
 }
