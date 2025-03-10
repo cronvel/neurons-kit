@@ -18,5 +18,6 @@ Synapse weight are printed on connection, neuron bias and output value is printe
 Connection lines are broader when the signal is stronger (absolute value of input x synapse weight),
 neuron discs are larger when its absolute output value is greater.
 
-Activation function can be coded using a color for the neuron.
+Activation function can be coded using a color for the neuron, or the function graph inside the disc.
 We can also vizualize back-propagation.
+
