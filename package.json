@@ -17,6 +17,9 @@
     "tree-kit": "^0.8.7",
     "utterminal": "^0.7.3"
   },
+  "peerDependencies": {
+    "svg-kit": "^0.8.2"
+  },
   "scripts": {
     "test": "tea-time -R dot"
   },
