@@ -29,6 +29,7 @@
 
 
 const nk = require( '../../..' ) ;
+const shuffleArray = require( 'array-kit' ).shuffle ;
 //const arrayKit = require( 'array-kit' ) ;
 //const string = require( 'string-kit' ) ;
 
@@ -55,14 +56,20 @@ exports.createNetwork = () => {
 
 exports.trial = async ( network ) => {
 	var error = 0 ;
-	
-	error += Math.abs( network.process( [ 0 , 0 ] )[ 0 ] ) ** 2 ;
-	error += Math.abs( network.process( [ 1 , 1 ] )[ 0 ] ) ** 2 ;
-	error += Math.abs( 1 - network.process( [ 0 , 1 ] )[ 0 ] ) ** 2 ;
-	error += Math.abs( 1 - network.process( [ 1 , 0 ] )[ 0 ] ) ** 2 ;
-	
+
+	var miniTrials = [
+		() => error += Math.abs( network.process( [ 0 , 0 ] )[ 0 ] ) ** 2 ,
+		() => error += Math.abs( network.process( [ 1 , 1 ] )[ 0 ] ) ** 2 ,
+		() => error += Math.abs( 1 - network.process( [ 0 , 1 ] )[ 0 ] ) ** 2 ,
+		() => error += Math.abs( 1 - network.process( [ 1 , 0 ] )[ 0 ] ) ** 2
+	] ;
+
+	shuffleArray( miniTrials ) ;
+
+	for ( let miniTrial of miniTrials ) { miniTrial() ; }
+
 	var fitness = 100 - 100 * Math.sqrt( error ) ;
-	
+
 	return fitness ;
 } ;
 
