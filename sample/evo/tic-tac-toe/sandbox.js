@@ -62,6 +62,7 @@ exports.createNetwork = () => {
 	var inputs = [] ;
 	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:self:' + index ) ) ;
 	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:other:' + index ) ) ;
+	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:free:' + index ) ) ;
 
 	network.setNetworkModel( {
 		inputs ,
@@ -89,11 +90,12 @@ exports.networkPlay = ( network , board , options = DEFAULT_NETWORK_PLAY_OPTIONS
 	// Split input, see above...
 	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
 	inputs.push( ... board.map( cell_ => cell_ < 0 ? 1 : 0 ) ) ;
+	inputs.push( ... board.map( cell_ => cell_ === 0 ? 1 : 0 ) ) ;
 
 	outputs = network.process( inputs ) ;
 
 	outputs.forEach( ( output , index ) => {
-		var score = output + 0.5 * Math.random() ;
+		var score = output + 0.2 * Math.random() ;
 		if ( score > maxScore ) { maxScore = score ; cell = index ; }
 	} ) ;
 	
