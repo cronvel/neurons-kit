@@ -81,10 +81,14 @@ exports.createNetwork = () => {
 
 const DEFAULT_NETWORK_PLAY_OPTIONS = {} ;
 
-exports.networkPlay = ( network , board , options = DEFAULT_NETWORK_PLAY_OPTIONS ) => {
+exports.networkPlay = ( network , board , params , extraOptions = DEFAULT_NETWORK_PLAY_OPTIONS ) => {
 	var cell , outputs ,
 		inputs = [] ,
-		maxScore = -Infinity ;
+		maxScore = -Infinity ,
+		// The exploration parameter allow the network to test some other relevant response,
+		// by adding a random value, // it's really important for reinforcement learning.
+		exploration = + params.exploration || 0 ;
+
 
 	// Split input, see above...
 	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
@@ -92,12 +96,12 @@ exports.networkPlay = ( network , board , options = DEFAULT_NETWORK_PLAY_OPTIONS
 
 	outputs = network.process( inputs ) ;
 
-	outputs.forEach( ( output , index ) => {
-		var score = output + 0.2 * Math.random() ;
+	outputs.forEach( ( score , index ) => {
+		if ( exploration ) { score += exploration * Math.random() ; }
 		if ( score > maxScore ) { maxScore = score ; cell = index ; }
 	} ) ;
 	
-	if ( options.displayOutput ) {
+	if ( extraOptions.displayOutput ) {
 		console.log( boardOutput( outputs ) ) ;
 	}
 
@@ -138,12 +142,12 @@ function boardOutput( outputs ) {
 
 
 
-exports.trialVersus = ( networks ) => {
+exports.trialVersus = ( networks , params ) => {
 	var game = new TicTacToe( false ) ;
 
 	var winner = game.runSync(
-		board => exports.networkPlay( networks[ 0 ] , board ) ,
-		board => exports.networkPlay( networks[ 1 ] , board )
+		board => exports.networkPlay( networks[ 0 ] , board , params ) ,
+		board => exports.networkPlay( networks[ 1 ] , board , params )
 	) ;
 
 	if ( ! networks[ 0 ].metadata.trialData ) { networks[ 0 ].metadata.trialData = {} ; }
@@ -185,11 +189,11 @@ exports.trialVersus = ( networks ) => {
 
 
 
-exports.trial = ( network ) => {
+exports.trial = ( network , params ) => {
 	var game = new TicTacToe( true ) ;
 
 	var winner = game.runSync(
-		board => exports.networkPlay( network , board ) ,
+		board => exports.networkPlay( network , board , params ) ,
 		board => exports.randomPlay( board )
 	) ;
 

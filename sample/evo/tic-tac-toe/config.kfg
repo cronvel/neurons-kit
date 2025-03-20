@@ -1,6 +1,9 @@
 
 sandbox: @@sandbox.js
 
+networkRunner:
+	exploration: 0.2
+
 evolution:
 	populationSize: 250
 	startingIslands: 5

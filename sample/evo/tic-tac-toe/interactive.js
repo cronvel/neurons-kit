@@ -45,11 +45,17 @@ term.on( 'key' , key => {
 	if ( key === 'CTRL_C' ) { process.exit() ; }
 } ) ;
 
+
+
 var game = new TicTacToe() ;
 
-
+// The exploration parameter allow the network to test some other relevant response,
+// by adding a random value, it's really important for reinforcement learning.
+var exploration = 0.2 ;
 
 const AZERTY_GRID = 'azeqsdwxc' ;
+
+
 
 async function interactivePlay( playerName ) {
 	var cell , choice , indexOf ;
@@ -116,7 +122,7 @@ async function runPvAi( filePath , index = 0 ) {
 		board => {
 			term( "\nBoard:\n%s" , game.boardStr() ) ;
 			term( "%s's turn: \n" , p2 ) ;
-			var cell = sandbox.networkPlay( network , board , { displayOutput: true } ) ;
+			var cell = sandbox.networkPlay( network , board , { exploration } , { displayOutput: true } ) ;
 			term( 'Chosen: %i\n' , cell ) ;
 			return cell ;
 		}
@@ -137,6 +143,7 @@ async function runPvAi( filePath , index = 0 ) {
 
 
 if ( process.argv[ 2 ] ) {
+	if ( process.argv[ 3 ] ) { exploration = + process.argv[ 3 ] || 0 ; }
 	runPvAi( process.argv[ 2 ] , parseInt( process.argv[ 3 ] , 10 ) || 0 ) ;
 }
 else {
