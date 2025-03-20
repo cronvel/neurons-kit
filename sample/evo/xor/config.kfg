@@ -13,7 +13,7 @@ evolution:
 	selectionRate: 0.15
 	eliteRate: 0.05
 	crossOverChance: 0.1
-	unitPenalty: 0.1
+	penaltyPerHiddenUnit: 0.1
 
 mutations:
 	count: 5

@@ -15,8 +15,11 @@ evolution:
 	#trialCount: 100
 	#trialVersusCount: 0
 	#trialVersusCount: 50
-	versusAll: yes
-	unorderedVersus: no
+	#versusMode: all
+	versusMode: tourney
+	tourneyPoolSize: 16
+	tourneyQualificationRate: 0.5
+	orderedVersus: yes
 	versus: 1
 	selectionRate: 0.15
 	eliteRate: 0.05
@@ -24,7 +27,7 @@ evolution:
 	eliteImmunity: 1
 	crossOverChance: 0.1
 	crossOverCompatibility: 0.8
-	unitPenalty: 0.0001
+	penaltyPerHiddenUnit: 0.0001
 
 mutations:
 	count: 10

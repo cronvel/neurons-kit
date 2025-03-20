@@ -62,7 +62,6 @@ exports.createNetwork = () => {
 	var inputs = [] ;
 	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:self:' + index ) ) ;
 	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:other:' + index ) ) ;
-	inputs.push( ... arrayKit.range( 9 ).map( index => 'board:free:' + index ) ) ;
 
 	network.setNetworkModel( {
 		inputs ,
@@ -90,7 +89,6 @@ exports.networkPlay = ( network , board , options = DEFAULT_NETWORK_PLAY_OPTIONS
 	// Split input, see above...
 	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
 	inputs.push( ... board.map( cell_ => cell_ < 0 ? 1 : 0 ) ) ;
-	inputs.push( ... board.map( cell_ => cell_ === 0 ? 1 : 0 ) ) ;
 
 	outputs = network.process( inputs ) ;
 
@@ -140,8 +138,8 @@ function boardOutput( outputs ) {
 
 
 
-exports.trialVersus = ( networks , orderMatters ) => {
-	var game = new TicTacToe( ! orderMatters ) ;
+exports.trialVersus = ( networks ) => {
+	var game = new TicTacToe( false ) ;
 
 	var winner = game.runSync(
 		board => exports.networkPlay( networks[ 0 ] , board ) ,
@@ -187,8 +185,8 @@ exports.trialVersus = ( networks , orderMatters ) => {
 
 
 
-exports.trial = ( network , orderMatters ) => {
-	var game = new TicTacToe( ! orderMatters ) ;
+exports.trial = ( network ) => {
+	var game = new TicTacToe( true ) ;
 
 	var winner = game.runSync(
 		board => exports.networkPlay( network , board ) ,
