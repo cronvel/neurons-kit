@@ -94,15 +94,10 @@ exports.networkPlay = ( network , board , params , extraOptions = DEFAULT_NETWOR
 	inputs.push( ... board.map( cell_ => cell_ > 0 ? 1 : 0 ) ) ;
 	inputs.push( ... board.map( cell_ => cell_ < 0 ? 1 : 0 ) ) ;
 
-	outputs = network.process( inputs ) ;
+	cell = network.processPolicy( inputs , exploration ) ;
 
-	outputs.forEach( ( score , index ) => {
-		if ( exploration ) { score += exploration * Math.random() ; }
-		if ( score > maxScore ) { maxScore = score ; cell = index ; }
-	} ) ;
-	
 	if ( extraOptions.displayOutput ) {
-		console.log( boardOutput( outputs ) ) ;
+		console.log( boardOutput( network.getOutputs() ) ) ;
 	}
 
 	return cell ;
